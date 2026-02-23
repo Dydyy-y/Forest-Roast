@@ -1,3 +1,5 @@
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { 
   Box, 
   Container, 
@@ -8,16 +10,85 @@ import {
   SimpleGrid,
   Image,
   HStack,
-  Flex
+  Flex,
+  Input,
+  InputGroup,
+  InputLeftElement,
+  Spinner,
+  Alert,
+  AlertIcon,
+  AlertTitle,
+  AlertDescription,
 } from '@chakra-ui/react';
 import { ProductCard } from '../components/ProductCard';
+import { productService } from '../services/product.service';
 import { mockCoffeeProducts } from '../data/mock-coffee-products';
+import type { Product } from '../types/product.types';
 
 export const HomePage = () => {
-  
+  const [products, setProducts] = useState<Product[]>([]);  //tableau de produit affiché dans la grille
+  const [loading, setLoading] = useState<boolean>(true);  // loading : true pendant l'appel API, affiche un spinner
+  const [error, setError] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [debouncedSearch, setDebouncedSearch] = useState<string>('');  // debouncedSearch : valeur retardée de searchQuery pour limiter les appels API
+
+  const navigate = useNavigate();
+
+  //debounce : attendre 400ms après la dernière frappe avant de chercher, évite un appel API à chaque caractère tapé
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(searchQuery);
+    }, 400);
+
+    // Cleanup : annuler le timer si l'utilisateur retape avant 400ms
+    return () => clearTimeout(timer);
+  }, [searchQuery]); // re-déclenche quand searchQuery change
+
+  //Charger les produits depuis l'API, se déclenche au premier rendu et quand debouncedSearch change
+  useEffect(() => {
+    const loadProducts = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        // Appel API via productService.search()
+        const result = await productService.search(
+          debouncedSearch ? { search: debouncedSearch } : undefined
+        );
+
+        setProducts(result);
+      } catch (err) {
+        // Si l'API est inaccessible, on utilise les données mock comme fallback
+        console.warn('API indisponible, utilisation des données mock:', err);
+        
+        // Filtrage local sur les mocks si une recherche est active
+        if (debouncedSearch) {
+          const filtered = mockCoffeeProducts.filter(p =>
+            p.name.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
+            p.description?.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
+            p.origin?.country?.toLowerCase().includes(debouncedSearch.toLowerCase())
+          );
+          setProducts(filtered);
+        } else {
+          setProducts(mockCoffeeProducts);
+        }
+        
+        setError('API non disponible — données de démonstration affichées');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadProducts();
+  }, [debouncedSearch]); // dépendance : relance quand la recherche change
+
   const handleAddToCart = (productId: number) => {
     console.log(`Produit ${productId} ajouté au panier`);
-    //todo : implémenter la logique du panier
+  };
+
+  // Naviguer vers la page détail du produit
+  const handleProductClick = (productId: number) => {
+    navigate(`/product/${productId}`);
   };
 
   return (
@@ -128,7 +199,7 @@ export const HomePage = () => {
       {/* Section "Découvrir notre sélection" */}
       <Container maxW="container.xl" py={{ base: 12, md: 16 }}>
         
-        <VStack spacing={2} mb={10} textAlign="center">
+        <VStack spacing={2} mb={8} textAlign="center">
           <Text 
             fontSize="label" 
             textTransform="uppercase" 
@@ -151,26 +222,87 @@ export const HomePage = () => {
           </Text>
         </VStack>
 
-        {/* Grille de produits */}
-        <SimpleGrid 
-          columns={{ base: 1, md: 2, lg: 3 }} 
-          spacing={{ base: 6, md: 8 }}
-        >
-          {mockCoffeeProducts.slice(0, 6).map(product => (
-            <ProductCard 
-              key={product.id} 
-              product={product}
-              onAddToCart={handleAddToCart}
+        {/* ── Barre de recherche ───────────────────────────────────────────
+            Input contrôlé : onChange met à jour searchQuery → déclenche debounce
+            → après 400ms → debouncedSearch change → useEffect relance l'API
+        */}
+        <Box maxW="480px" mx="auto" mb={10}>
+          <InputGroup size="lg">
+            <InputLeftElement pointerEvents="none" color="gray.400" fontSize="1.2em">
+              🔍
+            </InputLeftElement>
+            <Input
+              placeholder="Rechercher un café, une origine..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              bg="white"
+              borderColor="gray.200"
+              _focus={{ borderColor: 'secondary.400', boxShadow: '0 0 0 1px #c8962e' }}
+              fontFamily="body"
             />
-          ))}
-        </SimpleGrid>
-
-        {/* Call to Action - Voir tous les cafés */}
-        <Box textAlign="center" mt={12}>
-          <Button variant="secondary" size="lg">
-            VOIR TOUS LES CAFÉS
-          </Button>
+          </InputGroup>
+          {/* Indication du nombre de résultats */}
+          {!loading && (
+            <Text fontSize="sm" color="gray.500" mt={2} textAlign="center">
+              {products.length} café{products.length !== 1 ? 's' : ''} 
+              {debouncedSearch ? ` pour "${debouncedSearch}"` : ' disponibles'}
+            </Text>
+          )}
         </Box>
+
+        {/* ── Alerte API indisponible ──────────────────────────────────────── */}
+        {error && (
+          <Alert status="warning" mb={6} borderRadius="md">
+            <AlertIcon />
+            <AlertTitle>Mode démo</AlertTitle>
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
+
+        {/* ── Loader pendant l'appel API ──────────────────────────────────── */}
+        {loading ? (
+          <VStack py={16} spacing={4}>
+            <Spinner size="xl" color="secondary.400" thickness="3px" />
+            <Text color="gray.500">Chargement des produits...</Text>
+          </VStack>
+        ) : products.length === 0 ? (
+          /* ── Aucun résultat ───────────────────────────────────────────── */
+          <VStack py={16} spacing={4}>
+            <Text fontSize="2xl">☕</Text>
+            <Text color="gray.500" textAlign="center">
+              Aucun café trouvé pour "{debouncedSearch}"
+            </Text>
+            <Button variant="outline" onClick={() => setSearchQuery('')} size="sm">
+              Effacer la recherche
+            </Button>
+          </VStack>
+        ) : (
+          /* ── Grille de produits ───────────────────────────────────────── */
+          <>
+            <SimpleGrid 
+              columns={{ base: 1, md: 2, lg: 3 }} 
+              spacing={{ base: 6, md: 8 }}
+            >
+              {products.map(product => (
+                <ProductCard 
+                  key={product.id} 
+                  product={product}
+                  onAddToCart={handleAddToCart}
+                  onCardClick={handleProductClick}
+                />
+              ))}
+            </SimpleGrid>
+
+            {/* Call to Action - visible seulement s'il n'y a pas de recherche active */}
+            {!debouncedSearch && (
+              <Box textAlign="center" mt={12}>
+                <Button variant="secondary" size="lg">
+                  VOIR TOUS LES CAFÉS
+                </Button>
+              </Box>
+            )}
+          </>
+        )}
 
       </Container>
 
