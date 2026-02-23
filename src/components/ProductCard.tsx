@@ -15,13 +15,23 @@ import { Product } from '../types/product.types';
 interface ProductCardProps {
   product: Product;
   onAddToCart?: (productId: number) => void; //callback pour ajouter au panier
+  onCardClick?: (productId: number) => void; //pour naviguer vers la page détail
 }
 
-export const ProductCard = ({ product, onAddToCart }: ProductCardProps) => {
+export const ProductCard = ({ product, onAddToCart, onCardClick }: ProductCardProps) => {
   
-  const handleAddToCart = () => {
+  // Clic sur le bouton "Ajouter" : stoppe la propagation pour ne pas déclencher onCardClick
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.stopPropagation(); // empêche le clic de remonter vers la Card
     if (onAddToCart) {
       onAddToCart(product.id);
+    }
+  };
+
+  // Clic sur la card entière → naviguer vers la page détail
+  const handleCardClick = () => {
+    if (onCardClick) {
+      onCardClick(product.id);
     }
   };
 
@@ -34,6 +44,9 @@ export const ProductCard = ({ product, onAddToCart }: ProductCardProps) => {
         transform: 'translateY(-4px)',
         boxShadow: 'xl'
       }}
+      onClick={handleCardClick}
+      role="button"
+      aria-label={`Voir le détail de ${product.name}`}
     >
       <CardBody p={0}>
         {/* Image du produit */}
@@ -138,7 +151,7 @@ export const ProductCard = ({ product, onAddToCart }: ProductCardProps) => {
             <Button 
               variant="primary" 
               size="sm"
-              onClick={handleAddToCart}
+              onClick={(e) => handleAddToCart(e)}
               isDisabled={product.stock === 0}
             >
               {product.stock === 0 ? 'Épuisé' : 'Ajouter'}
