@@ -1,11 +1,7 @@
-//Ce fichier : utilitaires http (getHeaders, API_BASE_URL)
-
-//TODO : remplacer url par url reel api
-const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:3000/api"; //meta : objet fourni par vite pour accéder aux variables d'environnement (propriété de import) ; obligatoire car .env pas fichier JS classique
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL; //meta : objet fourni par vite pour accéder aux variables d'environnement (propriété de import) ; obligatoire car .env pas fichier JS classique
 
 interface HeaderOptions {
-  includeAuth?: boolean; //savoir si on ajoute le token JWT
+  includeAuth?: boolean; //savoir si on ajoute JWT
   contentType?: "json" | "form" | "multipart" | "none"; //contentType : indique le format envoyé dans le body ; multipart : envoyer des fichiers ; none : requete sans body (ex: GET)
   accept?: string; //format de reponse
   customHeaders?: Record<string, string>; //customHeaders : ajouter autre type pas prévu au cas ou ; Record : utilitaire ts pour créer un type objet (clé valeur) : necessaire car http est une paires nom valeur de str

@@ -13,7 +13,6 @@ export interface PaginatedResponse<T> {
   limit: number;
 }
 
-//abstract : ne peut pas faire new BaseService(), doit etre étendue
 export abstract class BaseService<T> {
   protected readonly baseUrl: string; //baseurl : stocker api
   protected readonly endpoint: string;
@@ -31,6 +30,7 @@ export abstract class BaseService<T> {
     return `${this.baseUrl}${this.endpoint}${path}`;
   }
 
+  //traiter la réponse d'une requette http
   protected async handleResponse<R = T>(response: Response): Promise<R> {
     if (!response.ok) {
       let errorMessage = `HTTP Error ${response.status}: ${response.statusText}`;
