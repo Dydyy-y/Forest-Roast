@@ -1,8 +1,11 @@
-//Chaque <Route> associe un chemin URL à un composant React
-
 import { Routes, Route } from "react-router-dom";
 import { HomePage } from "../pages/HomePage";
 import { ProductDetailPage } from "../pages/ProductDetailPage";
+import { LoginPage } from "../pages/LoginPage";
+import { ProfilePage } from "../pages/ProfilePage";
+import { CartPage } from "../pages/CartPage";
+import { OrderConfirmationPage } from "../pages/OrderConfirmationPage";
+import { ProtectedRoute } from "../components/ProtectedRoute";
 
 //404
 const NotFoundPage = () => (
@@ -17,17 +20,36 @@ const NotFoundPage = () => (
   </div>
 );
 
-//Rendu à l'intérieur de <BrowserRouter> dans App.tsx
 export const AppRouter = () => {
   return (
     <Routes>
-      {/* Route principale*/}
       <Route path="/" element={<HomePage />} />
-
-      {/* Route dynamique : :id est extrait avec useParams() dans ProductDetailPage */}
       <Route path="/product/:id" element={<ProductDetailPage />} />
-
-      {/* Catch-all : redirige toute route inconnue vers la 404 */}
+      <Route path="/login" element={<LoginPage />} />
+      <Route
+        path="/profile"
+        element={
+          <ProtectedRoute>
+            <ProfilePage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/cart"
+        element={
+          <ProtectedRoute>
+            <CartPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/order-confirmation"
+        element={
+          <ProtectedRoute>
+            <OrderConfirmationPage />
+          </ProtectedRoute>
+        }
+      />
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
