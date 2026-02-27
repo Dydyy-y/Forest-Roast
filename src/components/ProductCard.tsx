@@ -19,7 +19,6 @@ interface ProductCardProps {
 }
 
 export const ProductCard = ({ product, onAddToCart, onCardClick }: ProductCardProps) => {
-  
   // Clic sur le bouton "Ajouter" : stoppe la propagation pour ne pas déclencher onCardClick
   const handleAddToCart = (e: React.MouseEvent) => {
     e.stopPropagation(); // empêche le clic de remonter vers la Card
