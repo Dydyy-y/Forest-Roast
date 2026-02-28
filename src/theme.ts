@@ -239,6 +239,55 @@ const components = {
     },
   },
 
+  // Alert — remplace les couleurs Chakra par défaut
+  Alert: {
+    variants: {
+      subtle: {
+        container: {
+          bg: 'background.sand',
+          borderRadius: '8px',
+          borderLeft: '4px solid',
+          borderColor: 'secondary.400',
+        },
+        title: { color: 'primary.900', fontWeight: '600' },
+        description: { color: 'primary.800' },
+        icon: { color: 'secondary.400' },
+      },
+    },
+    defaultProps: { variant: 'subtle' },
+  },
+
+  // Badge — cohérent avec la palette
+  Badge: {
+    baseStyle: {
+      borderRadius: '4px',
+      textTransform: 'uppercase',
+      letterSpacing: '0.04em',
+      fontSize: 'small',
+      fontWeight: '500',
+      px: 2,
+      py: 0.5,
+    },
+    variants: {
+      subtle: {
+        bg: 'background.sand',
+        color: 'primary.900',
+      },
+      solid: {
+        bg: 'primary.900',
+        color: 'white',
+      },
+    },
+    defaultProps: { variant: 'subtle' },
+  },
+
+  // Spinner — couleur marque
+  Spinner: {
+    baseStyle: {
+      color: 'secondary.400',
+    },
+  },
+
   // Input & Form
   Input: {
     variants: {

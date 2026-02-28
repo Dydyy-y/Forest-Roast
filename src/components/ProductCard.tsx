@@ -51,12 +51,15 @@ export const ProductCard = ({ product, onAddToCart, onCardClick }: ProductCardPr
         {/* Image du produit */}
         <Box position="relative">
           <Image 
-            src={product.images?.[0]?.link || 'https://via.placeholder.com/400x300'} 
+            src={product.images?.[0]?.link || 'https://placehold.co/400x300?text=Café'}
             alt={product.images?.[0]?.alt || product.name}
             borderTopRadius="12px"
             objectFit="cover"
             h="250px"
             w="100%"
+            onError={(e) => {
+              (e.target as HTMLImageElement).src = 'https://placehold.co/400x300?text=Café';
+            }}
           />
           
           {/* Badge stock faible */}
