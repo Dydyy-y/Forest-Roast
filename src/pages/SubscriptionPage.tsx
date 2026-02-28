@@ -3,6 +3,7 @@ import {
   Container,
   Heading,
   Text,
+  Image,
   SimpleGrid,
   VStack,
   HStack,
@@ -16,10 +17,12 @@ import {
   AlertIcon,
   AlertDescription,
 } from '@chakra-ui/react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { mockCoffeeProducts } from '../data/mock-coffee-products';
+import { productService } from '../services/product.service';
+import type { Product } from '../types/product.types';
+import { PageLayout } from '../components/shared/layout/PageLayout';
 
 interface Formula {
   id: string;
@@ -82,6 +85,14 @@ export const SubscriptionPage = () => {
   const [selectedFormula, setSelectedFormula] = useState<string>('6months');
   const [selectedCoffee, setSelectedCoffee] = useState<string>('');
   const [showAuthAlert, setShowAuthAlert] = useState(false);
+  const [products, setProducts] = useState<Product[]>([]);
+
+  // Charger les produits depuis l'API au montage
+  useEffect(() => {
+    productService.search()
+      .then(setProducts)
+      .catch((err) => console.error('Erreur chargement produits:', err));
+  }, []);
 
   const handleSubscribe = () => {
     if (!isAuthenticated) {
@@ -94,45 +105,57 @@ export const SubscriptionPage = () => {
   };
 
   return (
-    <Box>
+    <PageLayout>
       {/* Hero */}
-      <Box
-        bg="primary.900"
-        color="white"
-        py={{ base: 16, md: 24 }}
-        px={{ base: 6, lg: 12 }}
-        textAlign="center"
-      >
-        <Badge
-          bg="secondary.500"
-          color="primary.900"
-          px={4}
-          py={1}
-          borderRadius="full"
-          fontSize="xs"
-          fontWeight="bold"
-          letterSpacing="widest"
-          textTransform="uppercase"
-          mb={6}
-        >
-          Abonnement café
-        </Badge>
-        <Heading
-          as="h1"
-          size="2xl"
-          fontFamily="heading"
-          mb={4}
-          lineHeight="1.1"
-        >
-          Votre café de spécialité,{' '}
-          <Text as="span" color="secondary.300">
-            chaque mois
-          </Text>
-        </Heading>
-        <Text fontSize="xl" opacity={0.85} maxW="600px" mx="auto" mt={4}>
-          Recevez une sélection de nos meilleurs crus, torréfiés à la commande
-          et livrés directement chez vous. Choisissez votre formule.
-        </Text>
+      <Box as="section" bg="primary.900" color="white" py={{ base: 20, md: 32 }}>
+        <Container maxW="container.lg">
+          <SimpleGrid columns={{ base: 1, md: 2 }} spacing={12} alignItems="center">
+            <Box>
+              <Image
+                src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=800"
+                alt="Mélange de grains de café"
+                borderRadius="2xl"
+                boxShadow="xl"
+                w="100%"
+                objectFit="cover"
+              />
+            </Box>
+            <Box textAlign={{ base: 'center', md: 'left' }}>
+              <Badge
+                bg="secondary.500"
+                color="primary.900"
+                px={4}
+                py={1}
+                borderRadius="full"
+                fontSize="xs"
+                fontWeight="bold"
+                letterSpacing="widest"
+                textTransform="uppercase"
+                mb={6}
+              >
+                Abonnement café
+              </Badge>
+              <Heading
+                as="h1"
+                size="2xl"
+                fontFamily="heading"
+                mb={4}
+                lineHeight="1.1"
+                color="white"
+                textShadow="0 0 6px rgba(0,0,0,0.7)"
+              >
+                Votre café de spécialité,{' '}
+                <Text as="span" color="white">
+                  chaque mois
+                </Text>
+              </Heading>
+              <Text fontSize="xl" opacity={0.9} maxW={{ base: '100%', md: '500px' }} color="white" textShadow="0 0 4px rgba(0,0,0,0.6)">
+                Recevez une sélection de nos meilleurs crus, torréfiés à la commande
+                et livrés directement chez vous. Choisissez votre formule.
+              </Text>
+            </Box>
+          </SimpleGrid>
+        </Container>
       </Box>
 
       <Container maxW="1100px" py={{ base: 12, md: 20 }} px={{ base: 4, md: 8 }}>
@@ -270,7 +293,7 @@ export const SubscriptionPage = () => {
             _hover={{ borderColor: 'primary.500' }}
             focusBorderColor="secondary.500"
           >
-            {mockCoffeeProducts.map((product) => (
+            {products.map((product) => (
               <option key={product.id} value={String(product.id)}>
                 {product.name} — {product.tastingNotes?.join(', ')}
               </option>
@@ -278,7 +301,7 @@ export const SubscriptionPage = () => {
           </Select>
 
           {selectedCoffee && (() => {
-            const p = mockCoffeeProducts.find((x) => String(x.id) === selectedCoffee);
+            const p = products.find((x) => String(x.id) === selectedCoffee);
             if (!p) return null;
             return (
               <Box mt={6} p={5} bg="white" borderRadius="xl" borderLeft="4px solid" borderColor="secondary.400">
@@ -339,7 +362,7 @@ export const SubscriptionPage = () => {
 
             {(() => {
               const formula = FORMULAS.find((f) => f.id === selectedFormula)!;
-              const coffee = mockCoffeeProducts.find((x) => String(x.id) === selectedCoffee);
+              const coffee = products.find((x) => String(x.id) === selectedCoffee);
               return (
                 <VStack spacing={5} align="stretch">
                   <HStack justify="space-between">
@@ -401,7 +424,7 @@ export const SubscriptionPage = () => {
           </Text>
         </Box>
       </Container>
-    </Box>
+    </PageLayout>
   );
 };
 

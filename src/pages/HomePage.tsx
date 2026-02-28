@@ -21,7 +21,6 @@ import {
 } from '@chakra-ui/react';
 import { ProductCard } from '../components/ProductCard';
 import { productService } from '../services/product.service';
-import { mockCoffeeProducts } from '../data/mock-coffee-products';
 import type { Product } from '../types/product.types';
 import { PageLayout } from '../components/shared/layout/PageLayout';
 import { useCart } from '../context/CartContext';
@@ -72,22 +71,8 @@ export const HomePage = () => {
 
         setProducts(result);
       } catch (err) {
-        // Si l'API est inaccessible, on utilise les données mock comme fallback
-        console.warn('API indisponible, utilisation des données mock:', err);
-        
-        // Filtrage local sur les mocks si une recherche est active
-        if (debouncedSearch) {
-          const filtered = mockCoffeeProducts.filter(p =>
-            p.name.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
-            p.description?.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
-            p.origin?.country?.toLowerCase().includes(debouncedSearch.toLowerCase())
-          );
-          setProducts(filtered);
-        } else {
-          setProducts(mockCoffeeProducts);
-        }
-        
-        setError('API non disponible — données de démonstration affichées');
+        console.error('Erreur lors du chargement des produits:', err);
+        setError('Impossible de charger les produits. Vérifiez que le serveur est démarré.');
       } finally {
         setLoading(false);
       }

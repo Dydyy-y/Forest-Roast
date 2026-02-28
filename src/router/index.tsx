@@ -7,6 +7,7 @@ import { CartPage } from "../pages/CartPage";
 import { OrderConfirmationPage } from "../pages/OrderConfirmationPage";
 import { ProtectedRoute } from "../components/ProtectedRoute";
 import { SubscriptionPage } from "../pages/SubscriptionPage";
+import { CoffeePage } from "../pages/CoffeePage";
 
 //404
 const NotFoundPage = () => (
@@ -52,6 +53,7 @@ export const AppRouter = () => {
         }
       />
       <Route path="/abonnement" element={<SubscriptionPage />} />
+      <Route path="/cafes" element={<CoffeePage />} />
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );

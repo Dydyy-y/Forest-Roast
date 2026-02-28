@@ -36,7 +36,6 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import { productService } from '../services/product.service';
-import { mockCoffeeProducts } from '../data/mock-coffee-products';
 import type { Product } from '../types/product.types';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
@@ -92,21 +91,8 @@ export const ProductDetailPage = () => {
         const result = await productService.getById(parseInt(id, 10));
         setProduct(result);
       } catch (err) {
-        // Si erreur API → chercher dans les mocks
-        console.warn('API indisponible, recherche dans les données mock:', err);
-
-        // parseInt(id, 10) : base 10 explicite (bonne pratique)
-        const mockProduct = mockCoffeeProducts.find(
-          (p) => p.id === parseInt(id, 10)
-        );
-
-        if (mockProduct) {
-          setProduct(mockProduct);
-          setApiWarning('API non disponible — données de démonstration affichées');
-        } else {
-          // Aucun produit avec cet id → 404
-          setNotFound(true);
-        }
+        console.error('Erreur chargement produit:', err);
+        setNotFound(true);
       } finally {
         setLoading(false);
       }
@@ -119,7 +105,7 @@ export const ProductDetailPage = () => {
   useEffect(() => {
     productService.search()
       .then(setAllProducts)
-      .catch(() => setAllProducts(mockCoffeeProducts));
+      .catch(() => setAllProducts([]));
   }, []);
 
   // ─── Handler Ajouter au panier ────────────────────────────────────────────

@@ -10,7 +10,8 @@ export const Navbar = () => {
 
   const handleLogout = () => {
     logout();
-    navigate('/login');
+    // après déconnexion, revenir à l'accueil plutôt qu'à la page de login
+    navigate('/');
   };
 
   return (
@@ -45,7 +46,7 @@ export const Navbar = () => {
           size="sm"
           color="primary.900"
           fontWeight="medium"
-          onClick={() => navigate('/')}
+          onClick={() => navigate('/cafes')}
           _hover={{ bg: 'secondary.50', color: 'primary.900' }}
         >
           Café
@@ -83,7 +84,7 @@ export const Navbar = () => {
               position="relative"
               onClick={() => navigate('/cart')}
             >
-              🛒 Panier
+              Panier
               {cart && (cart.Products?.length ?? 0) > 0 && (
                 <Badge
                   position="absolute"
