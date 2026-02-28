@@ -36,13 +36,7 @@ import { productService } from '../services/product.service';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import type { Product, RoastLevel } from '../types/product.types';
-
-const ROAST_LABELS: Record<string, string> = {
-  light: 'Claire',
-  medium: 'Médium',
-  'medium-dark': 'Médium-foncé',
-  dark: 'Foncée',
-};
+import { ROAST_LABELS } from '../constants/product.constants';
 
 const COFFEE_METADATA: Record<string, { roastLevel: RoastLevel; tastingNotes: string[] }> = {
   'Éthiopie Yirgacheffe': { roastLevel: 'light', tastingNotes: ['jasmin', 'bergamote', 'fruits rouges'] },
@@ -429,7 +423,7 @@ export const CoffeePage = () => {
                 <HStack spacing={2} flexWrap="wrap">
                   {selectedRoasts.map((r) => (
                     <Badge key={r} colorScheme="orange" variant="subtle" px={2}>
-                      {ROAST_LABELS[r]}
+                      {ROAST_LABELS[r as RoastLevel]}
                     </Badge>
                   ))}
                   {selectedProfiles.map((p) => (

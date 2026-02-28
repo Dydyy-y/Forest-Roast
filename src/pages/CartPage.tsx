@@ -19,7 +19,7 @@ import { PageLayout } from '../components/shared/layout/PageLayout';
 
 export const CartPage = () => {
   const navigate = useNavigate();
-  const { cart, isLoading, removeFromCart } = useCart();
+  const { cart, isLoading, removeFromCart, loadingProductId } = useCart();
 
   // Loading
   if (isLoading && !cart) {
@@ -128,7 +128,7 @@ export const CartPage = () => {
                     variant="ghost"
                     size="sm"
                     color="gray.400"
-                    isLoading={isLoading}
+                    isLoading={loadingProductId === product.id}
                     onClick={() => removeFromCart(product.id)}
                     _hover={{ color: 'red.500', bg: 'red.50' }}
                   />

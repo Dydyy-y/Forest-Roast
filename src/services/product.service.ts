@@ -34,17 +34,7 @@ class ProductService extends BaseService<Product> {
       }
 
       //méthode getall() héritée
-      const result = await this.getAll(queryParams);
-      // sequelize returns associations with capitalized keys by default, e.g. Images
-      // normalise to lowercase 'images' so UI can read product.images
-      return result.map((p) => {
-        const copy: any = { ...p };
-        if ((copy as any).Images) {
-          copy.images = (copy as any).Images;
-          delete copy.Images;
-        }
-        return copy;
-      }) as Product[];
+      return await this.getAll(queryParams);
     } catch (error) {
       console.error("Error searching products:", error);
       throw error;

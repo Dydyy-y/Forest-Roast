@@ -10,7 +10,7 @@ import {
   HStack,
   Box
 } from '@chakra-ui/react';
-import { Product } from '../types/product.types';
+import type { Product } from '../types/product.types';
 
 interface ProductCardProps {
   product: Product;
@@ -153,7 +153,7 @@ export const ProductCard = ({ product, onAddToCart, onCardClick }: ProductCardPr
             <Button 
               variant="primary" 
               size="sm"
-              onClick={(e) => handleAddToCart(e)}
+              onClick={handleAddToCart}
               isDisabled={product.stock === 0}
             >
               {product.stock === 0 ? 'Épuisé' : 'Ajouter'}

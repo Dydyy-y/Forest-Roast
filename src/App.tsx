@@ -5,13 +5,13 @@ import { AppRouter } from './router';
 
 function App() {
   return (
-    <AuthProvider>
-      <CartProvider>
-        <BrowserRouter>
+    <BrowserRouter>
+      <AuthProvider>
+        <CartProvider>
           <AppRouter />
-        </BrowserRouter>
-      </CartProvider>
-    </AuthProvider>
+        </CartProvider>
+      </AuthProvider>
+    </BrowserRouter>
   );
 }
 

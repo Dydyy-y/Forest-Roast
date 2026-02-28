@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Link } from "react-router-dom";
 import { HomePage } from "../pages/HomePage";
 import { ProductDetailPage } from "../pages/ProductDetailPage";
 import { LoginPage } from "../pages/LoginPage";
@@ -16,9 +16,9 @@ const NotFoundPage = () => (
     <p style={{ fontSize: "18px", color: "#6b7280" }}>
       Page introuvable. Cette page n'existe pas.
     </p>
-    <a href="/" style={{ color: "#c8962e", textDecoration: "underline" }}>
+    <Link to="/" style={{ color: "#c8962e", textDecoration: "underline" }}>
       Retour à l'accueil
-    </a>
+    </Link>
   </div>
 );
 

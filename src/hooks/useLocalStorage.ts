@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 //fait avec l'ia
 
 /**
@@ -39,7 +39,7 @@ function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T) => voi
    * 
    * @param value - Nouvelle valeur à stocker
    */
-  const setValue = (value: T) => {
+  const setValue = useCallback((value: T) => {
     try {
       // Mettre à jour le state React
       setStoredValue(value);
@@ -47,11 +47,11 @@ function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T) => voi
       // Sauvegarder dans localStorage
       window.localStorage.setItem(key, JSON.stringify(value));
       
-      console.log(`💾 Saved to localStorage ["${key}"]:`, value);
+      console.log(`💾 Saved to localStorage ["${key}"]`, value);
     } catch (error) {
       console.error(`❌ Error saving to localStorage key "${key}":`, error);
     }
-  };
+  }, [key]);
 
   /**
    * 🎓 EXPLICATION : Pourquoi JSON.stringify() ?

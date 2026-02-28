@@ -13,6 +13,7 @@ import type { Cart } from '../types/cart.types';
 interface CartContextType {
   cart: Cart | null;       
   isLoading: boolean;           
+  loadingProductId: number | null;
   addToCart: (productId: number) => Promise<void>;   
   removeFromCart: (productId: number) => Promise<void>; 
   refreshCart: () => Promise<void>;                 
@@ -28,6 +29,7 @@ export const CartProvider = ({ children }: CartProviderProps) => {
 
   const [cart, setCart] = useState<Cart | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [loadingProductId, setLoadingProductId] = useState<number | null>(null);
 
   const refreshCart = useCallback(async () => {
     // Garde : ne charger le panier que si l'utilisateur est connecté
@@ -61,7 +63,7 @@ export const CartProvider = ({ children }: CartProviderProps) => {
       if (!cart) return; // Garde : le panier doit être chargé
 
       try {
-        setIsLoading(true);
+        setLoadingProductId(productId);
         // POST /api/carts/{cart_id}/products/{product_id}
         const updatedCart = await cartService.addProduct(cart.id, productId);
         setCart(updatedCart); // Mettre à jour avec le panier retourné par l'API
@@ -70,7 +72,7 @@ export const CartProvider = ({ children }: CartProviderProps) => {
         console.error(`Erreur ajout produit ${productId}:`, error);
         throw error; // On re-throw pour que le composant puisse afficher une erreur
       } finally {
-        setIsLoading(false);
+        setLoadingProductId(null);
       }
     },
     [cart]
@@ -81,7 +83,7 @@ export const CartProvider = ({ children }: CartProviderProps) => {
       if (!cart) return;
 
       try {
-        setIsLoading(true);
+        setLoadingProductId(productId);
         // DELETE /api/carts/{cart_id}/products/{product_id}
         const updatedCart = await cartService.removeProduct(cart.id, productId);
         setCart(updatedCart);
@@ -90,7 +92,7 @@ export const CartProvider = ({ children }: CartProviderProps) => {
         console.error(`Erreur retrait produit ${productId}:`, error);
         throw error;
       } finally {
-        setIsLoading(false);
+        setLoadingProductId(null);
       }
     },
     [cart]
@@ -98,7 +100,7 @@ export const CartProvider = ({ children }: CartProviderProps) => {
 
   return (
     <CartContext.Provider
-      value={{ cart, isLoading, addToCart, removeFromCart, refreshCart }}
+      value={{ cart, isLoading, loadingProductId, addToCart, removeFromCart, refreshCart }}
     >
       {children}
     </CartContext.Provider>

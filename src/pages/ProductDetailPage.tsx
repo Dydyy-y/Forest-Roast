@@ -41,14 +41,7 @@ import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import { PageLayout } from '../components/shared/layout/PageLayout';
 import { RelatedProducts } from '../components/features/products/RelatedProducts';
-
-// Libellés lisibles pour les niveaux de torréfaction
-const ROAST_LABELS: Record<string, string> = {
-  light: 'Claire',
-  medium: 'Médium',
-  'medium-dark': 'Médium-foncé',
-  dark: 'Foncée',
-};
+import { ROAST_LABELS } from '../constants/product.constants';
 
 export const ProductDetailPage = () => {
   // ─── Routing ─────────────────────────────────────────────────────────────

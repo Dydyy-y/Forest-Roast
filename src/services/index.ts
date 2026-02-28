@@ -4,6 +4,9 @@ export { API_BASE_URL, getHeaders } from "./api";
 //services métiers
 export { BaseService } from "./base.service";
 export { productService } from "./product.service";
+export { authService } from "./auth.service";
+export { cartService } from "./cart.service";
+export { userService } from "./user.service";
 
 //types
 export type { QueryParams, PaginatedResponse } from "./base.service";

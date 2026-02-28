@@ -14,12 +14,11 @@ import {
   AlertIcon,
   AlertDescription,
   Avatar,
-  HStack,
-  Flex,
   Container,
 } from '@chakra-ui/react';
 import { useAuth } from '../context/AuthContext';
 import { userService } from '../services/user.service';
+import { PageLayout } from '../components/shared/layout/PageLayout';
 
 export const ProfilePage = () => {
   const navigate = useNavigate();
@@ -88,50 +87,8 @@ export const ProfilePage = () => {
     }
   };
 
-  const handleLogout = () => {
-    logout();
-    navigate('/login');
-  };
-
   return (
-    <Box minHeight="100vh" bg="background.cream">
-      {/* Navbar minimale */}
-      <Flex
-        as="nav"
-        bg="background.cream"
-        py={4}
-        px={{ base: 4, md: 6, lg: 12 }}
-        justify="space-between"
-        align="center"
-        flexWrap="wrap"
-        gap={3}
-        borderBottom="1px solid"
-        borderColor="gray.200"
-      >
-        <Heading
-          size={{ base: 'sm', md: 'lg' }}
-          fontFamily="heading"
-          color="primary.900"
-          cursor="pointer"
-          onClick={() => navigate('/')}
-        >
-          Elegant Heritage
-        </Heading>
-        <HStack spacing={3} flexShrink={0}>
-          <Button variant="ghost" size="sm" onClick={() => navigate('/')}>
-            ← Retour
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            colorScheme="red"
-            onClick={handleLogout}
-          >
-            Se déconnecter
-          </Button>
-        </HStack>
-      </Flex>
-
+    <PageLayout>
       {/* Contenu principal */}
       <Container maxW="container.sm" py={10}>
         {/* Avatar + titre */}
@@ -255,6 +212,6 @@ export const ProfilePage = () => {
           </form>
         </Box>
       </Container>
-    </Box>
+    </PageLayout>
   );
 };
