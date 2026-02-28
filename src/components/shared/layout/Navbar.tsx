@@ -1,4 +1,4 @@
-import { Flex, Heading, HStack, Button, Badge } from '@chakra-ui/react';
+import { Box, Flex, Heading, HStack, Button, Badge } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../context/AuthContext';
 import { useCart } from '../../../context/CartContext';
@@ -20,47 +20,50 @@ export const Navbar = () => {
       bg="background.cream"
       py={4}
       px={{ base: 6, lg: 12 }}
-      justify="space-between"
       align="center"
       /* pas de ligne grise sous le navbar */
       position="sticky"
       top={0}
       zIndex={100}
     >
-      {/* Logo — cliquable pour revenir à l'accueil */}
-      <Heading
-        size="lg"
-        fontFamily="heading"
-        color="primary.900"
-        cursor="pointer"
-        onClick={() => navigate('/')}
-      >
-        Elegant Heritage
-      </Heading>
+      <HStack spacing={8} align="center">
+        {/* Logo — cliquable pour revenir à l'accueil */}
+        <Heading
+          size="lg"
+          fontFamily="heading"
+          color="primary.900"
+          cursor="pointer"
+          onClick={() => navigate('/')}
+        >
+          Elegant Heritage
+        </Heading>
 
-      {/* Navigation principale */}
-      <HStack spacing={1} display={{ base: 'none', md: 'flex' }}>
-        <Button
-          variant="ghost"
-          size="sm"
-          color="primary.900"
-          fontWeight="medium"
-          onClick={() => navigate('/cafes')}
-          _hover={{ bg: 'secondary.50', color: 'primary.900' }}
-        >
-          Café
-        </Button>
-        <Button
-          variant="ghost"
-          size="sm"
-          color="primary.900"
-          fontWeight="medium"
-          onClick={() => navigate('/abonnement')}
-          _hover={{ bg: 'secondary.50', color: 'primary.900' }}
-        >
-          Abonnement
-        </Button>
+        {/* Navigation principale */}
+        <HStack spacing={1} display={{ base: 'none', md: 'flex' }}>
+          <Button
+            variant="ghost"
+            size="sm"
+            color="primary.900"
+            fontWeight="medium"
+            onClick={() => navigate('/cafes')}
+            _hover={{ bg: 'secondary.50', color: 'primary.900' }}
+          >
+            Café
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            color="primary.900"
+            fontWeight="medium"
+            onClick={() => navigate('/abonnement')}
+            _hover={{ bg: 'secondary.50', color: 'primary.900' }}
+          >
+            Abonnement
+          </Button>
+        </HStack>
       </HStack>
+
+      <Box flex="1" />
 
       {/* Menu d'authentification — identique sur toutes les pages */}
       <HStack spacing={4} display={{ base: 'none', md: 'flex' }}>

@@ -356,7 +356,7 @@ export const SubscriptionPage = () => {
             borderRadius="2xl"
             p={8}
           >
-            <Heading size="lg" fontFamily="heading" mb={6}>
+            <Heading size="lg" fontFamily="heading" mb={6} color="white">
               Récapitulatif
             </Heading>
 
@@ -366,28 +366,28 @@ export const SubscriptionPage = () => {
               return (
                 <VStack spacing={5} align="stretch">
                   <HStack justify="space-between">
-                    <Text opacity={0.8}>Formule</Text>
-                    <Text fontWeight="bold">{formula.label}</Text>
+                    <Text color="gray.200">Formule</Text>
+                    <Text fontWeight="bold" color="white">{formula.label}</Text>
                   </HStack>
                   <HStack justify="space-between">
-                    <Text opacity={0.8}>Café sélectionné</Text>
-                    <Text fontWeight="bold" textAlign="right" maxW="180px">
+                    <Text color="gray.200">Café sélectionné</Text>
+                    <Text fontWeight="bold" color="white" textAlign="right" maxW="180px">
                       {coffee ? coffee.name : '—'}
                     </Text>
                   </HStack>
                   <HStack justify="space-between">
-                    <Text opacity={0.8}>Prix / mois</Text>
-                    <Text fontWeight="bold">{formula.pricePerMonth.toFixed(2)} €</Text>
+                    <Text color="gray.200">Prix / mois</Text>
+                    <Text fontWeight="bold" color="white">{formula.pricePerMonth.toFixed(2)} €</Text>
                   </HStack>
                   {formula.savings > 0 && (
                     <HStack justify="space-between">
-                      <Text opacity={0.8}>Économie</Text>
+                      <Text color="gray.200">Économie</Text>
                       <Badge colorScheme="green">−{formula.savings}%</Badge>
                     </HStack>
                   )}
                   <Divider borderColor="whiteAlpha.300" />
                   <HStack justify="space-between">
-                    <Text opacity={0.8}>Total engagement</Text>
+                    <Text color="gray.200">Total engagement</Text>
                     <Heading size="md">{formula.totalPrice.toFixed(2)} €</Heading>
                   </HStack>
 
