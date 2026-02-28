@@ -32,6 +32,7 @@ export const HomePage = () => {
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [debouncedSearch, setDebouncedSearch] = useState<string>('');  // debouncedSearch : valeur retardée de searchQuery pour limiter les appels API
+  const [showAll, setShowAll] = useState<boolean>(false); // whether to display all products or only first 6
 
   const navigate = useNavigate();
   const { addToCart } = useCart();
@@ -309,7 +310,7 @@ export const HomePage = () => {
               columns={{ base: 1, md: 2, lg: 3 }} 
               spacing={{ base: 6, md: 8 }}
             >
-              {products.map(product => (
+              {(showAll ? products : products.slice(0, 6)).map(product => (
                 <ProductCard 
                   key={product.id} 
                   product={product}
@@ -319,10 +320,10 @@ export const HomePage = () => {
               ))}
             </SimpleGrid>
 
-            {/* Call to Action - visible seulement s'il n'y a pas de recherche active */}
-            {!debouncedSearch && (
+            {/* Call to Action - visible seulement s'il n'y a pas de recherche active et qu'il y a plus de 6 produits */}
+            {!debouncedSearch && products.length > 6 && !showAll && (
               <Box textAlign="center" mt={12}>
-                <Button variant="secondary" size="lg">
+                <Button variant="secondary" size="lg" onClick={() => { setShowAll(true); catalogRef.current?.scrollIntoView({ behavior: 'smooth' }); }}>
                   VOIR TOUS LES CAFÉS
                 </Button>
               </Box>
