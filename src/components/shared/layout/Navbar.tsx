@@ -22,8 +22,7 @@ export const Navbar = () => {
       px={{ base: 6, lg: 12 }}
       justify="space-between"
       align="center"
-      borderBottom="1px solid"
-      borderColor="gray.200"
+      /* pas de ligne grise sous le navbar */
       position="sticky"
       top={0}
       zIndex={100}

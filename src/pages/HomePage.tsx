@@ -100,6 +100,7 @@ export const HomePage = () => {
       {/* Hero Section */}
       <Box 
         position="relative"
+        mt="-10px"
         h={{ base: '520px', md: '680px' }}
         bg="primary.900"
         color="white"
@@ -142,12 +143,12 @@ export const HomePage = () => {
           zIndex={1}
         >
           <VStack 
-            justify="center" 
+            justify="start" 
             align="start" 
             h="100%" 
             spacing={6}
             maxW="640px"
-            pb={{ base: 8, md: 16 }}
+            pt={{ base: 8, md: 16 }}
           >
             {/* Label au-dessus du titre */}
             <HStack spacing={3} align="center">
