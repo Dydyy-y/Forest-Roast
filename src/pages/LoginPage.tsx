@@ -5,7 +5,6 @@ import {
   Button,
   FormControl,
   FormLabel,
-  FormErrorMessage,
   Input,
   VStack,
   Heading,
@@ -305,7 +304,6 @@ export const LoginPage = () => {
                       _focus={{ borderColor: 'primary.900', boxShadow: '0 0 0 1px #3E2723' }}
                       autoComplete="email"
                     />
-                    <FormErrorMessage>Email déjà utilisé ou invalide</FormErrorMessage>
                   </FormControl>
 
                   <FormControl isRequired>

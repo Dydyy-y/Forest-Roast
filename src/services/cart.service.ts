@@ -22,12 +22,7 @@ class CartService extends BaseService<Cart> {
         }),
       });
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(errorText || `Erreur ${response.status}`);
-      }
-
-      return response.json() as Promise<Cart>;
+      return await this.handleResponse<Cart>(response);
     } catch (error) {
       console.error(`Erreur chargement panier utilisateur ${userId}:`, error);
       throw error;
@@ -57,12 +52,7 @@ class CartService extends BaseService<Cart> {
         }),
       });
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(errorText || `Erreur ${response.status}`);
-      }
-
-      return response.json() as Promise<number>;
+      return await this.handleResponse<number>(response);
     } catch (error) {
       console.error(`Erreur comptage panier utilisateur ${userId}:`, error);
       throw error;
@@ -96,20 +86,7 @@ class CartService extends BaseService<Cart> {
         }
       );
 
-      // Gestion erreur manuelle : 404 est text/plain (pas JSON)
-      if (!response.ok) {
-        const errorText = await response.text();
-        let message = errorText;
-        try {
-          const errorJson = JSON.parse(errorText);
-          message = errorJson.message || errorJson.error || message;
-        } catch {
-          // text/plain → garder tel quel
-        }
-        throw new Error(message || `Erreur ${response.status}`);
-      }
-
-      return response.json() as Promise<Cart>;
+      return await this.handleResponse<Cart>(response);
     } catch (error) {
       console.error(`Erreur ajout produit ${productId} au panier:`, error);
       throw error;
@@ -141,19 +118,7 @@ class CartService extends BaseService<Cart> {
         }
       );
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        let message = errorText;
-        try {
-          const errorJson = JSON.parse(errorText);
-          message = errorJson.message || errorJson.error || message;
-        } catch {
-          // text/plain → garder tel quel
-        }
-        throw new Error(message || `Erreur ${response.status}`);
-      }
-
-      return response.json() as Promise<Cart>;
+      return await this.handleResponse<Cart>(response);
     } catch (error) {
       console.error(`Erreur retrait produit ${productId} du panier:`, error);
       throw error;

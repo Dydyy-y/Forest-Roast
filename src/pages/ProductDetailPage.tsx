@@ -28,10 +28,6 @@ import {
   Badge,
   Divider,
   Spinner,
-  Alert,
-  AlertIcon,
-  AlertTitle,
-  AlertDescription,
   Flex,
   useToast,
 } from '@chakra-ui/react';
@@ -58,7 +54,6 @@ export const ProductDetailPage = () => {
   const [loading, setLoading] = useState<boolean>(true);
   // notFound : true si l'API renvoie 404 ou si l'id ne correspond à aucun produit mock
   const [notFound, setNotFound] = useState<boolean>(false);
-  const [apiWarning, setApiWarning] = useState<string | null>(null);
   // addingToCart : désactive le bouton pendant l'appel API pour éviter les double-clics
   const [addingToCart, setAddingToCart] = useState<boolean>(false);
   // allProducts : pour la section "Vous pourriez aimer"
@@ -77,7 +72,6 @@ export const ProductDetailPage = () => {
       try {
         setLoading(true);
         setNotFound(false);
-        setApiWarning(null);
 
         // parseInt() : convertit la string "42" en number 42 pour l'appel API
         // GET /api/products/42
@@ -148,18 +142,20 @@ export const ProductDetailPage = () => {
   // ─── Rendu conditionnel : Loading ─────────────────────────────────────────
   if (loading) {
     return (
-      <Flex minH="60vh" justify="center" align="center" direction="column" gap={4}>
-        <Spinner size="xl" color="secondary.400" thickness="3px" />
-        <Text color="gray.500">Chargement du produit...</Text>
-      </Flex>
+      <PageLayout>
+        <Flex minH="60vh" justify="center" align="center" direction="column" gap={4}>
+          <Spinner size="xl" color="secondary.400" thickness="3px" />
+          <Text color="gray.500">Chargement du produit...</Text>
+        </Flex>
+      </PageLayout>
     );
   }
 
   // ─── Rendu conditionnel : 404 ─────────────────────────────────────────────
   if (notFound || !product) {
     return (
-      <Box minH="60vh" pt={20}>
-        <Container maxW="container.md" textAlign="center">
+      <PageLayout>
+        <Container maxW="container.md" py={20} textAlign="center">
           <Text fontSize="64px">☕</Text>
           <Heading fontFamily="heading" color="primary.900" mb={4}>
             Produit introuvable
@@ -171,7 +167,7 @@ export const ProductDetailPage = () => {
             Retour au catalogue
           </Button>
         </Container>
-      </Box>
+      </PageLayout>
     );
   }
 
@@ -181,14 +177,6 @@ export const ProductDetailPage = () => {
 
       <Container maxW="container.xl" py={{ base: 10, md: 16 }}>
 
-        {/* Alerte mode démo */}
-        {apiWarning && (
-          <Alert status="warning" mb={8} borderRadius="md">
-            <AlertIcon />
-            <AlertTitle>Mode démo</AlertTitle>
-            <AlertDescription>{apiWarning}</AlertDescription>
-          </Alert>
-        )}
 
         {/* ── Bloc principal : Image + Infos ─────────────────────────────── */}
         <SimpleGrid columns={{ base: 1, md: 2 }} spacing={{ base: 8, md: 14 }}>

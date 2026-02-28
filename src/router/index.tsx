@@ -1,4 +1,5 @@
 import { Routes, Route, Link } from "react-router-dom";
+import { Box, Heading, Text } from "@chakra-ui/react";
 import { HomePage } from "../pages/HomePage";
 import { ProductDetailPage } from "../pages/ProductDetailPage";
 import { LoginPage } from "../pages/LoginPage";
@@ -8,18 +9,21 @@ import { OrderConfirmationPage } from "../pages/OrderConfirmationPage";
 import { ProtectedRoute } from "../components/ProtectedRoute";
 import { SubscriptionPage } from "../pages/SubscriptionPage";
 import { CoffeePage } from "../pages/CoffeePage";
+import { PageLayout } from "../components/shared/layout/PageLayout";
 
 //404
 const NotFoundPage = () => (
-  <div style={{ textAlign: "center", padding: "80px 20px" }}>
-    <h1 style={{ fontSize: "48px", color: "#1a0a00" }}>404</h1>
-    <p style={{ fontSize: "18px", color: "#6b7280" }}>
-      Page introuvable. Cette page n'existe pas.
-    </p>
-    <Link to="/" style={{ color: "#c8962e", textDecoration: "underline" }}>
-      Retour à l'accueil
-    </Link>
-  </div>
+  <PageLayout>
+    <Box textAlign="center" py={20} px={6}>
+      <Heading size="4xl" color="primary.900" mb={4}>404</Heading>
+      <Text fontSize="lg" color="gray.500" mb={6}>
+        Page introuvable. Cette page n&apos;existe pas.
+      </Text>
+      <Link to="/" style={{ color: "#c8962e", textDecoration: "underline" }}>
+        Retour à l&apos;accueil
+      </Link>
+    </Box>
+  </PageLayout>
 );
 
 export const AppRouter = () => {

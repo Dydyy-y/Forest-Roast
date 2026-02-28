@@ -53,7 +53,7 @@ class AuthService extends BaseService<AuthUser> {
         throw new Error(message);
       }
 
-      return response.json() as Promise<AuthUser>;
+      return await this.handleResponse<AuthUser>(response);
     } catch (error) {
       console.error('Error signing up:', error);
       throw error;
@@ -100,7 +100,7 @@ class AuthService extends BaseService<AuthUser> {
         throw new Error(message);
       }
 
-      return response.json() as Promise<SignInResponse>;
+      return await this.handleResponse<SignInResponse>(response);
     } catch (error) {
       console.error('Error signing in:', error);
       throw error;
@@ -110,4 +110,3 @@ class AuthService extends BaseService<AuthUser> {
 
 // Instance singleton exportée — même pattern que productService
 export const authService = new AuthService();
-export default authService;

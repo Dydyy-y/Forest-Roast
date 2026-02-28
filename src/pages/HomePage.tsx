@@ -88,7 +88,7 @@ export const HomePage = () => {
       navigate('/login');
       return;
     }
-    addToCart(productId);
+    addToCart(productId).catch((err) => console.error('Erreur ajout panier:', err));
   };
 
   // Naviguer vers la page détail du produit

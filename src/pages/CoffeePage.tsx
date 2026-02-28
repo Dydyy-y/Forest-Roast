@@ -193,7 +193,7 @@ export const CoffeePage = () => {
 
   const handleAddToCart = (productId: number) => {
     if (!isAuthenticated) { navigate('/login'); return; }
-    addToCart(productId);
+    addToCart(productId).catch((err) => console.error('Erreur ajout panier:', err));
   };
 
   return (

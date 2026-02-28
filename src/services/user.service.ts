@@ -54,7 +54,7 @@ class UserService extends BaseService<AuthUser> {
         throw new Error(message || `Erreur ${response.status}`);
       }
 
-      return response.json() as Promise<AuthUser>;
+      return await this.handleResponse<AuthUser>(response);
     } catch (error) {
       console.error(`❌ Error fetching user ${id}:`, error);
       throw error;
@@ -100,7 +100,7 @@ class UserService extends BaseService<AuthUser> {
         throw new Error(message || `Erreur ${response.status}`);
       }
 
-      return response.json() as Promise<AuthUser>;
+      return await this.handleResponse<AuthUser>(response);
     } catch (error) {
       console.error(`❌ Error updating user ${id}:`, error);
       throw error;
@@ -110,4 +110,3 @@ class UserService extends BaseService<AuthUser> {
 
 // Singleton exporté — même pattern que authService, productService
 export const userService = new UserService();
-export default userService;

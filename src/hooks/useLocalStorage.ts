@@ -79,7 +79,12 @@ function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T) => voi
   useEffect(() => {
     const handleStorageChange = (e: StorageEvent) => {
       // Vérifier si c'est NOTRE clé qui a changé
-      if (e.key === key && e.newValue !== null) {
+      if (e.key !== key) return;
+
+      if (e.newValue === null) {
+        // La clé a été supprimée depuis un autre onglet → revenir à la valeur initiale
+        setStoredValue(initialValue);
+      } else {
         try {
           setStoredValue(JSON.parse(e.newValue));
         } catch (error) {

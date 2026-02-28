@@ -24,10 +24,12 @@ export const CartPage = () => {
   // Loading
   if (isLoading && !cart) {
     return (
-      <Flex minH="60vh" justify="center" align="center" direction="column" gap={4}>
-        <Spinner size="xl" color="secondary.400" thickness="3px" />
-        <Text color="gray.500">Chargement du panier...</Text>
-      </Flex>
+      <PageLayout>
+        <Flex minH="60vh" justify="center" align="center" direction="column" gap={4}>
+          <Spinner size="xl" color="secondary.400" thickness="3px" />
+          <Text color="gray.500">Chargement du panier...</Text>
+        </Flex>
+      </PageLayout>
     );
   }
 

@@ -35,7 +35,7 @@ export const RelatedProducts = ({ currentProductId, products }: RelatedProductsP
       navigate('/login');
       return;
     }
-    addToCart(productId);
+    addToCart(productId).catch((err) => console.error('Erreur ajout panier:', err));
   };
 
   return (
