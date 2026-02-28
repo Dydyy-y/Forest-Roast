@@ -8,6 +8,7 @@ import {
   SimpleGrid,
   HStack,
   VStack,
+  Flex,
   Input,
   InputGroup,
   InputLeftElement,
@@ -247,13 +248,14 @@ export const CoffeePage = () => {
 
       <Container maxW="container.xl" py={{ base: 8, md: 12 }}>
         {/* Top bar : search + sort + filter toggle */}
-        <HStack
+        <Flex
+          direction={{ base: 'column', sm: 'row' }}
           justify="space-between"
-          flexWrap="wrap"
+          align={{ base: 'stretch', sm: 'center' }}
           gap={3}
           mb={6}
         >
-          <InputGroup maxW="340px">
+          <InputGroup maxW={{ base: '100%', sm: '340px' }}>
             <InputLeftElement pointerEvents="none">
               <Icon viewBox="0 0 24 24" color="gray.400" boxSize={4}>
                 <path
@@ -272,14 +274,15 @@ export const CoffeePage = () => {
             />
           </InputGroup>
 
-          <HStack spacing={3}>
+          <HStack spacing={2} flexWrap="wrap">
             <Select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
               size="md"
               bg="white"
               borderColor="gray.200"
-              maxW="200px"
+              flex={{ base: '1', sm: 'none' }}
+              maxW={{ base: '100%', sm: '200px' }}
               _focus={{ borderColor: 'secondary.500', boxShadow: 'none' }}
             >
               {SORT_OPTIONS.map((o) => (
@@ -292,6 +295,7 @@ export const CoffeePage = () => {
               borderColor="gray.300"
               size="md"
               onClick={onToggle}
+              flexShrink={0}
               _hover={{ bg: 'secondary.50', borderColor: 'secondary.400' }}
             >
               Filtres
@@ -303,12 +307,12 @@ export const CoffeePage = () => {
             </Button>
 
             {activeFiltersCount > 0 && (
-              <Button variant="ghost" size="md" color="gray.500" onClick={resetFilters}>
+              <Button variant="ghost" size="md" color="gray.500" onClick={resetFilters} flexShrink={0}>
                 Réinitialiser
               </Button>
             )}
           </HStack>
-        </HStack>
+        </Flex>
 
         {/* Filter panel */}
         <Collapse in={filtersOpen} animateOpacity>

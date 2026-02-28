@@ -1,14 +1,19 @@
-import { Box, Container, Heading, HStack, Text, VStack } from '@chakra-ui/react';
+import { Box, Container, Flex, Heading, Text, VStack } from '@chakra-ui/react';
 
 export const Footer = () => {
   return (
     <Box bg="primary.900" color="gray.200" py={8}>
       <Container maxW="container.xl">
-        <VStack spacing={4}>
+        <VStack spacing={5}>
           <Heading size="lg" fontFamily="heading" color="white">
             Elegant Heritage
           </Heading>
-          <HStack spacing={8} fontSize="small">
+          <Flex
+            gap={{ base: 4, sm: 8 }}
+            fontSize="small"
+            flexWrap="wrap"
+            justify="center"
+          >
             <Text color="white" cursor="pointer" _hover={{ color: 'secondary.500' }}>
               À propos
             </Text>
@@ -18,8 +23,8 @@ export const Footer = () => {
             <Text color="white" cursor="pointer" _hover={{ color: 'secondary.500' }}>
               CGV
             </Text>
-          </HStack>
-          <Text fontSize="small" color="gray.300">
+          </Flex>
+          <Text fontSize="small" color="gray.300" textAlign="center">
             © 2026 Elegant Heritage Coffee. Tous droits réservés.
           </Text>
         </VStack>

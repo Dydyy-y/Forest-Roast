@@ -100,14 +100,16 @@ export const ProfilePage = () => {
         as="nav"
         bg="background.cream"
         py={4}
-        px={{ base: 6, lg: 12 }}
+        px={{ base: 4, md: 6, lg: 12 }}
         justify="space-between"
         align="center"
+        flexWrap="wrap"
+        gap={3}
         borderBottom="1px solid"
         borderColor="gray.200"
       >
         <Heading
-          size="lg"
+          size={{ base: 'sm', md: 'lg' }}
           fontFamily="heading"
           color="primary.900"
           cursor="pointer"
@@ -115,7 +117,7 @@ export const ProfilePage = () => {
         >
           Elegant Heritage
         </Heading>
-        <HStack spacing={3}>
+        <HStack spacing={3} flexShrink={0}>
           <Button variant="ghost" size="sm" onClick={() => navigate('/')}>
             ← Retour
           </Button>

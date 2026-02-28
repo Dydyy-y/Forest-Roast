@@ -10,6 +10,7 @@ import {
   SimpleGrid,
   Image,
   HStack,
+  Flex,
   Input,
   InputGroup,
   InputLeftElement,
@@ -190,7 +191,7 @@ export const HomePage = () => {
 
             {/* Ligne de stats */}
             <HStack
-              spacing={8}
+              spacing={{ base: 5, md: 8 }}
               pt={2}
               divider={
                 <Box w="1px" h="32px" bg="whiteAlpha.300" />
@@ -198,27 +199,33 @@ export const HomePage = () => {
             >
               {[['100%', 'Traçable'], ['Bio', 'Certifié'], ['Fair Trade', 'Direct']].map(([value, label]) => (
                 <VStack key={label} spacing={0} align="start">
-                  <Text fontFamily="heading" fontSize="xl" color="white" fontWeight="600" userSelect="none">{value}</Text>
-                  <Text fontSize="small" color="whiteAlpha.600" userSelect="none">{label}</Text>
+                  <Text fontFamily="heading" fontSize={{ base: 'md', md: 'xl' }} color="white" fontWeight="600" userSelect="none">{value}</Text>
+                  <Text fontSize={{ base: 'xs', md: 'small' }} color="whiteAlpha.600" userSelect="none">{label}</Text>
                 </VStack>
               ))}
             </HStack>
-            
-            <HStack spacing={4} pt={2}>
-              <Button variant="primary" size="lg" onClick={scrollToCatalog}>
+
+            <Flex
+              direction={{ base: 'column', sm: 'row' }}
+              gap={3}
+              pt={2}
+              w={{ base: '100%', sm: 'auto' }}
+            >
+              <Button variant="primary" size={{ base: 'md', md: 'lg' }} onClick={scrollToCatalog} w={{ base: '100%', sm: 'auto' }}>
                 DÉCOUVRIR LA SÉLECTION
               </Button>
               <Button
                 variant="outline"
-                size="lg"
+                size={{ base: 'md', md: 'lg' }}
                 color="white"
                 borderColor="whiteAlpha.600"
+                w={{ base: '100%', sm: 'auto' }}
                 _hover={{ bg: 'whiteAlpha.100', borderColor: 'white' }}
                 onClick={scrollToEngagement}
               >
                 NOTRE HISTOIRE
               </Button>
-            </HStack>
+            </Flex>
           </VStack>
         </Container>
       </Box>
