@@ -1,11 +1,11 @@
-import { Flex, Heading, HStack, Button, Text, Badge } from '@chakra-ui/react';
+import { Flex, Heading, HStack, Button, Badge } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../context/AuthContext';
 import { useCart } from '../../../context/CartContext';
 
 export const Navbar = () => {
   const navigate = useNavigate();
-  const { isAuthenticated, user, logout } = useAuth();
+  const { isAuthenticated, logout } = useAuth();
   const { cart } = useCart();
 
   const handleLogout = () => {
@@ -38,13 +38,34 @@ export const Navbar = () => {
         Elegant Heritage
       </Heading>
 
+      {/* Navigation principale */}
+      <HStack spacing={1} display={{ base: 'none', md: 'flex' }}>
+        <Button
+          variant="ghost"
+          size="sm"
+          color="primary.900"
+          fontWeight="medium"
+          onClick={() => navigate('/')}
+          _hover={{ bg: 'secondary.50', color: 'primary.900' }}
+        >
+          Café
+        </Button>
+        <Button
+          variant="ghost"
+          size="sm"
+          color="primary.900"
+          fontWeight="medium"
+          onClick={() => navigate('/abonnement')}
+          _hover={{ bg: 'secondary.50', color: 'primary.900' }}
+        >
+          Abonnement
+        </Button>
+      </HStack>
+
       {/* Menu d'authentification — identique sur toutes les pages */}
       <HStack spacing={4} display={{ base: 'none', md: 'flex' }}>
         {isAuthenticated ? (
           <>
-            <Text fontSize="sm" color="primary.900" fontWeight="medium">
-              Bonjour, {user?.firstName} 👋
-            </Text>
             <Button
               variant="ghost"
               size="sm"
@@ -63,7 +84,7 @@ export const Navbar = () => {
               onClick={() => navigate('/cart')}
             >
               🛒 Panier
-              {cart && cart.Products.length > 0 && (
+              {cart && (cart.Products?.length ?? 0) > 0 && (
                 <Badge
                   position="absolute"
                   top="-1"

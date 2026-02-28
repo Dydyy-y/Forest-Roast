@@ -33,10 +33,15 @@ import {
   AlertTitle,
   AlertDescription,
   Flex,
+  useToast,
 } from '@chakra-ui/react';
 import { productService } from '../services/product.service';
 import { mockCoffeeProducts } from '../data/mock-coffee-products';
 import type { Product } from '../types/product.types';
+import { useAuth } from '../context/AuthContext';
+import { useCart } from '../context/CartContext';
+import { PageLayout } from '../components/shared/layout/PageLayout';
+import { RelatedProducts } from '../components/features/products/RelatedProducts';
 
 // Libellés lisibles pour les niveaux de torréfaction
 const ROAST_LABELS: Record<string, string> = {
@@ -52,6 +57,9 @@ export const ProductDetailPage = () => {
   // id est TOUJOURS une string depuis l'URL
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
+  const { addToCart } = useCart();
+  const toast = useToast();
 
   // ─── État local ───────────────────────────────────────────────────────────
   const [product, setProduct] = useState<Product | null>(null);
@@ -59,6 +67,10 @@ export const ProductDetailPage = () => {
   // notFound : true si l'API renvoie 404 ou si l'id ne correspond à aucun produit mock
   const [notFound, setNotFound] = useState<boolean>(false);
   const [apiWarning, setApiWarning] = useState<string | null>(null);
+  // addingToCart : désactive le bouton pendant l'appel API pour éviter les double-clics
+  const [addingToCart, setAddingToCart] = useState<boolean>(false);
+  // allProducts : pour la section "Vous pourriez aimer"
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
 
   // ─── Chargement du produit ────────────────────────────────────────────────
   useEffect(() => {
@@ -103,11 +115,55 @@ export const ProductDetailPage = () => {
     loadProduct();
   }, [id]); // Se relance si l'id change (navigation entre produits)
 
+  // ─── Chargement de tous les produits (suggestions) ────────────────────────
+  useEffect(() => {
+    productService.search()
+      .then(setAllProducts)
+      .catch(() => setAllProducts(mockCoffeeProducts));
+  }, []);
+
   // ─── Handler Ajouter au panier ────────────────────────────────────────────
-  const handleAddToCart = () => {
+  /**
+   * 🎓 CONCEPT : async event handler
+   * handleAddToCart est async car addToCart() fait un appel API.
+   * On utilise un state addingToCart pour désactiver le bouton pendant l'appel
+   * (evite les doubles-clics et montre un feedback visuel à l'utilisateur).
+   */
+  const handleAddToCart = async () => {
     if (!product) return;
-    console.log(`Produit ${product.id} ajouté au panier`);
-    // TODO STORY-007 : dispatch action CartContext → POST /api/carts/user/{userId}
+
+    // Si non connecté → rediriger vers la page de connexion
+    if (!isAuthenticated) {
+      navigate('/login');
+      return;
+    }
+
+    try {
+      setAddingToCart(true);
+      await addToCart(product.id); // CartContext → POST /api/carts/{cart_id}/products/{product_id}
+
+      // Feedback visuel succès via toast Chakra UI
+      toast({
+        title: 'Produit ajouté au panier ✓',
+        description: `${product.name} a été ajouté à votre panier.`,
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+        position: 'bottom-right',
+      });
+    } catch (error) {
+      // Feedback visuel erreur
+      toast({
+        title: 'Erreur',
+        description: error instanceof Error ? error.message : 'Impossible d\'ajouter au panier.',
+        status: 'error',
+        duration: 4000,
+        isClosable: true,
+        position: 'bottom-right',
+      });
+    } finally {
+      setAddingToCart(false);
+    }
   };
 
   // ─── Rendu conditionnel : Loading ─────────────────────────────────────────
@@ -142,27 +198,7 @@ export const ProductDetailPage = () => {
 
   // ─── Rendu principal ──────────────────────────────────────────────────────
   return (
-    <Box minH="100vh" bg="background.cream">
-
-      {/* Barre de navigation */}
-      <Flex
-        as="nav"
-        bg="background.cream"
-        py={4}
-        px={{ base: 6, lg: 12 }}
-        justify="space-between"
-        align="center"
-        borderBottom="1px solid"
-        borderColor="gray.200"
-      >
-        <Heading size="lg" fontFamily="heading" color="primary.900">
-          Elegant Heritage
-        </Heading>
-        {/* Bouton retour : navigate(-1) remonte dans l'historique du navigateur */}
-        <Button variant="outline" size="sm" onClick={() => navigate(-1)}>
-          ← Retour au catalogue
-        </Button>
-      </Flex>
+    <PageLayout>
 
       <Container maxW="container.xl" py={{ base: 10, md: 16 }}>
 
@@ -262,7 +298,9 @@ export const ProductDetailPage = () => {
               variant="primary"
               size="lg"
               w="100%"
-              isDisabled={product.stock === 0}
+              isDisabled={product.stock === 0 || addingToCart}
+              isLoading={addingToCart}
+              loadingText="Ajout en cours..."
               onClick={handleAddToCart}
             >
               {product.stock === 0 ? 'Produit épuisé' : 'Ajouter au panier'}
@@ -344,7 +382,14 @@ export const ProductDetailPage = () => {
         )}
 
       </Container>
-    </Box>
+
+      {/* ── Vous pourriez aimer ─────────────────────────────────────────── */}
+      <RelatedProducts
+        currentProductId={product.id}
+        products={allProducts}
+      />
+
+    </PageLayout>
   );
 };
 

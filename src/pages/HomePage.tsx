@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   Box, 
@@ -10,7 +10,6 @@ import {
   SimpleGrid,
   Image,
   HStack,
-  Flex,
   Input,
   InputGroup,
   InputLeftElement,
@@ -24,6 +23,9 @@ import { ProductCard } from '../components/ProductCard';
 import { productService } from '../services/product.service';
 import { mockCoffeeProducts } from '../data/mock-coffee-products';
 import type { Product } from '../types/product.types';
+import { PageLayout } from '../components/shared/layout/PageLayout';
+import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
 
 export const HomePage = () => {
   const [products, setProducts] = useState<Product[]>([]);  //tableau de produit affiché dans la grille
@@ -33,6 +35,18 @@ export const HomePage = () => {
   const [debouncedSearch, setDebouncedSearch] = useState<string>('');  // debouncedSearch : valeur retardée de searchQuery pour limiter les appels API
 
   const navigate = useNavigate();
+  const { addToCart } = useCart();
+  const { isAuthenticated } = useAuth();
+  const catalogRef = useRef<HTMLDivElement>(null);
+  const engagementRef = useRef<HTMLDivElement>(null);
+
+  const scrollToCatalog = () => {
+    catalogRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const scrollToEngagement = () => {
+    engagementRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
 
   //debounce : attendre 400ms après la dernière frappe avant de chercher, évite un appel API à chaque caractère tapé
   useEffect(() => {
@@ -83,7 +97,11 @@ export const HomePage = () => {
   }, [debouncedSearch]); // dépendance : relance quand la recherche change
 
   const handleAddToCart = (productId: number) => {
-    console.log(`Produit ${productId} ajouté au panier`);
+    if (!isAuthenticated) {
+      navigate('/login');
+      return;
+    }
+    addToCart(productId);
   };
 
   // Naviguer vers la page détail du produit
@@ -92,57 +110,17 @@ export const HomePage = () => {
   };
 
   return (
-    <Box>
-      
-      {/* Navigation Bar */}
-      <Flex 
-        as="nav"
-        bg="background.cream" 
-        py={4} 
-        px={{ base: 6, lg: 12 }}
-        justify="space-between"
-        align="center"
-        borderBottom="1px solid"
-        borderColor="gray.200"
-      >
-        <Heading 
-          size="lg" 
-          fontFamily="heading"
-          color="primary.900"
-        >
-          Elegant Heritage
-        </Heading>
-        
-        <HStack spacing={8} display={{ base: 'none', md: 'flex' }}>
-          <Text 
-            fontSize="body" 
-            cursor="pointer"
-            _hover={{ color: 'secondary.400' }}
-          >
-            Cafés
-          </Text>
-          <Text 
-            fontSize="body" 
-            cursor="pointer"
-            _hover={{ color: 'secondary.400' }}
-          >
-            Accessoires
-          </Text>
-          <Button variant="outline" size="sm">
-            Se connecter
-          </Button>
-        </HStack>
-      </Flex>
+    <PageLayout bg="white">
 
       {/* Hero Section */}
       <Box 
         position="relative"
-        h={{ base: '400px', md: '600px' }}
+        h={{ base: '520px', md: '680px' }}
         bg="primary.900"
         color="white"
         overflow="hidden"
       >
-        {/* Background Image avec overlay */}
+        {/* Background Image */}
         <Image 
           src="https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=1600"
           alt="Grains de café torréfiés"
@@ -152,9 +130,25 @@ export const HomePage = () => {
           w="100%"
           h="100%"
           objectFit="cover"
-          opacity={0.4}
+          opacity={0.55}
         />
-        
+        {/* Gradient overlay : sombre en bas pour lisibilité */}
+        <Box
+          position="absolute"
+          inset={0}
+          bgGradient="linear(to-b, blackAlpha.400 0%, blackAlpha.700 100%)"
+        />
+
+        {/* Trait décoratif subtil en haut */}
+        <Box
+          position="absolute"
+          top={0}
+          left={0}
+          right={0}
+          h="3px"
+          bgGradient="linear(to-r, transparent, secondary.500, transparent)"
+        />
+
         {/* Hero Content */}
         <Container 
           maxW="container.xl" 
@@ -167,28 +161,74 @@ export const HomePage = () => {
             align="start" 
             h="100%" 
             spacing={6}
-            maxW="600px"
+            maxW="640px"
+            pb={{ base: 8, md: 16 }}
           >
+            {/* Label au-dessus du titre */}
+            <HStack spacing={3} align="center">
+              <Box w="32px" h="1px" bg="secondary.500" />
+              <Text
+                fontSize="small"
+                textTransform="uppercase"
+                letterSpacing="widest"
+                color="secondary.500"
+                fontWeight="500"
+                userSelect="none"
+              >
+                Torréfaction artisanale
+              </Text>
+            </HStack>
+
             <Heading 
-              size="display"
               fontFamily="heading"
-              fontSize={{ base: '36px', md: '60px' }}
-              lineHeight="1.1"
+              fontSize={{ base: '40px', md: '68px' }}
+              lineHeight="1.05"
+              color="white"
+              userSelect="none"
             >
               Café d'exception,<br />
-              torréfié avec passion.
+              <Box as="span" color="secondary.500">torréfié</Box> avec passion.
             </Heading>
             
-            <Text fontSize={{ base: 'body', md: 'large' }} maxW="500px">
-              Chaque grain peut être tracé jusqu'à sa parcelle d'origine. 
-              Du terroir à votre tasse, simplement exceptionnel.
+            <Text
+              fontSize={{ base: 'body', md: 'large' }}
+              maxW="480px"
+              color="whiteAlpha.800"
+              lineHeight="1.7"
+              userSelect="none"
+            >
+              Chaque grain tracé jusqu'à sa parcelle d'origine — 
+              du terroir à votre tasse, simplement exceptionnel.
             </Text>
+
+            {/* Ligne de stats */}
+            <HStack
+              spacing={8}
+              pt={2}
+              divider={
+                <Box w="1px" h="32px" bg="whiteAlpha.300" />
+              }
+            >
+              {[['100%', 'Traçable'], ['Bio', 'Certifié'], ['Fair Trade', 'Direct']].map(([value, label]) => (
+                <VStack key={label} spacing={0} align="start">
+                  <Text fontFamily="heading" fontSize="xl" color="white" fontWeight="600" userSelect="none">{value}</Text>
+                  <Text fontSize="small" color="whiteAlpha.600" userSelect="none">{label}</Text>
+                </VStack>
+              ))}
+            </HStack>
             
-            <HStack spacing={4} pt={4}>
-              <Button variant="primary" size="lg">
+            <HStack spacing={4} pt={2}>
+              <Button variant="primary" size="lg" onClick={scrollToCatalog}>
                 DÉCOUVRIR LA SÉLECTION
               </Button>
-              <Button variant="outline" size="lg" color="white" borderColor="white">
+              <Button
+                variant="outline"
+                size="lg"
+                color="white"
+                borderColor="whiteAlpha.600"
+                _hover={{ bg: 'whiteAlpha.100', borderColor: 'white' }}
+                onClick={scrollToEngagement}
+              >
                 NOTRE HISTOIRE
               </Button>
             </HStack>
@@ -197,7 +237,7 @@ export const HomePage = () => {
       </Box>
 
       {/* Section "Découvrir notre sélection" */}
-      <Container maxW="container.xl" py={{ base: 12, md: 16 }}>
+      <Container ref={catalogRef} maxW="container.xl" py={{ base: 12, md: 16 }}>
         
         <VStack spacing={2} mb={8} textAlign="center">
           <Text 
@@ -307,7 +347,7 @@ export const HomePage = () => {
       </Container>
 
       {/* Section "Du terroir à votre tasse" */}
-      <Box bg="background.sand" py={{ base: 12, md: 20 }}>
+      <Box ref={engagementRef} bg="background.sand" py={{ base: 12, md: 20 }}>
         <Container maxW="container.xl">
           <SimpleGrid columns={{ base: 1, md: 2 }} spacing={12} alignItems="center">
             
@@ -358,7 +398,7 @@ export const HomePage = () => {
                 </Box>
               </HStack>
               
-              <Button variant="primary" size="md" mt={4}>
+              <Button variant="primary" size="md" mt={4} onClick={scrollToCatalog}>
                 EN SAVOIR PLUS
               </Button>
             </VStack>
@@ -367,32 +407,7 @@ export const HomePage = () => {
         </Container>
       </Box>
 
-      {/* Footer Simple */}
-      <Box bg="primary.900" color="white" py={8}>
-        <Container maxW="container.xl">
-          <VStack spacing={4}>
-            <Heading size="lg" fontFamily="heading">
-              Elegant Heritage
-            </Heading>
-            <HStack spacing={8} fontSize="small">
-              <Text cursor="pointer" _hover={{ color: 'secondary.500' }}>
-                À propos
-              </Text>
-              <Text cursor="pointer" _hover={{ color: 'secondary.500' }}>
-                Contact
-              </Text>
-              <Text cursor="pointer" _hover={{ color: 'secondary.500' }}>
-                CGV
-              </Text>
-            </HStack>
-            <Text fontSize="small" color="gray.400">
-              © 2026 Elegant Heritage Coffee. Tous droits réservés.
-            </Text>
-          </VStack>
-        </Container>
-      </Box>
-
-    </Box>
+    </PageLayout>
   );
 };
 

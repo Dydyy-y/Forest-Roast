@@ -50,7 +50,10 @@ const getHeaders = (options: HeaderOptions = {}): HeadersInit => {
 
   //Ajoute token JWT aux headers s'il existe, sinon avertit
   if (includeAuth) {
-    const token = localStorage.getItem("auth_token"); //on va chercher JWT dans localStorage
+    // useLocalStorage sérialise en JSON → le token est stocké sous la forme "\"abc123\""
+    // Il faut parser avec JSON.parse pour obtenir le string brut sans guillemets
+    const raw = localStorage.getItem("auth_token");
+    const token = raw ? JSON.parse(raw) : null;
     if (token) {
       headers["Authorization"] = `Bearer ${token}`; //[] : convention des headers http ; Bearer : =porteur ; schéma d'authentification standardisé (défini dans RFC 6750), veut dire celui qui porte ce token est autorisé
     } else {
