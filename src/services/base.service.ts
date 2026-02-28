@@ -45,7 +45,34 @@ export abstract class BaseService<T> {
       throw new Error(errorMessage);
     }
     //parser erreurs
-    return response.json() as Promise<R>;
+    const json = await response.json();
+
+    // si la réponse contient des produits ou objets avec associations,
+    // on convertit les clés capitalisées en minuscules pour plus de
+    // cohérence avec les interfaces TypeScript (Images -> images,
+    // Category -> category, etc.). Cette fonction est généreuse et va
+    // opérer récursivement sur tableaux ou objets simples.
+    const normalize = (obj: any): any => {
+      if (Array.isArray(obj)) {
+        return obj.map(normalize);
+      }
+      if (obj && typeof obj === 'object') {
+        const copy: any = {};
+        Object.entries(obj).forEach(([k, v]) => {
+          let key = k;
+          // exemple d'associations retournées par Sequelize
+          if (k === 'Images') key = 'images';
+          if (k === 'Category') key = 'category';
+          if (k === 'Origin') key = 'origin';
+          // appliquer la normalisation récursivement
+          copy[key] = normalize(v);
+        });
+        return copy;
+      }
+      return obj;
+    };
+
+    return normalize(json) as R;
   }
 
   /**
