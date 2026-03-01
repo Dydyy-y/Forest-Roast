@@ -65,5 +65,3 @@ export const OrderConfirmationPage = () => {
     </PageLayout>
   );
 };
-
-export default OrderConfirmationPage;
