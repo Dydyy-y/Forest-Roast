@@ -60,34 +60,51 @@ export const CartProvider = ({ children }: CartProviderProps) => {
 
   const addToCart = useCallback(
     async (productId: number) => {
-      if (!cart) return; // Garde : le panier doit être chargé
+      if (!isAuthenticated || !user) return;
 
       try {
         setLoadingProductId(productId);
+
+        // Si le panier n'est pas encore chargé, on le récupère d'abord
+        let currentCart = cart;
+        if (!currentCart) {
+          currentCart = await cartService.getCartByUserId(user.id);
+          setCart(currentCart);
+        }
+
+        if (!currentCart) throw new Error('Impossible de charger le panier');
+
         // POST /api/carts/{cart_id}/products/{product_id}
-        const updatedCart = await cartService.addProduct(cart.id, productId);
-        setCart(updatedCart); // Mettre à jour avec le panier retourné par l'API
-        console.log(`Produit ${productId} ajouté au panier`);
+        const updatedCart = await cartService.addProduct(currentCart.id, productId);
+        setCart(updatedCart);
       } catch (error) {
         console.error(`Erreur ajout produit ${productId}:`, error);
-        throw error; // On re-throw pour que le composant puisse afficher une erreur
+        throw error;
       } finally {
         setLoadingProductId(null);
       }
     },
-    [cart]
+    [cart, isAuthenticated, user]
   );
 
   const removeFromCart = useCallback(
     async (productId: number) => {
-      if (!cart) return;
+      if (!isAuthenticated || !user) return;
 
       try {
         setLoadingProductId(productId);
+
+        let currentCart = cart;
+        if (!currentCart) {
+          currentCart = await cartService.getCartByUserId(user.id);
+          setCart(currentCart);
+        }
+
+        if (!currentCart) throw new Error('Impossible de charger le panier');
+
         // DELETE /api/carts/{cart_id}/products/{product_id}
-        const updatedCart = await cartService.removeProduct(cart.id, productId);
+        const updatedCart = await cartService.removeProduct(currentCart.id, productId);
         setCart(updatedCart);
-        console.log(`Produit ${productId} retiré du panier`);
       } catch (error) {
         console.error(`Erreur retrait produit ${productId}:`, error);
         throw error;
@@ -95,7 +112,7 @@ export const CartProvider = ({ children }: CartProviderProps) => {
         setLoadingProductId(null);
       }
     },
-    [cart]
+    [cart, isAuthenticated, user]
   );
 
   return (

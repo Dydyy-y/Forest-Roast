@@ -242,7 +242,7 @@ export const CoffeePage = () => {
       </Box>
 
       <Container maxW="container.xl" py={{ base: 8, md: 12 }}>
-        {/* Top bar : search + sort + filter toggle */}
+        {/* Top bar : search + sort (gauche) | filter toggle (droite) */}
         <Flex
           direction={{ base: 'column', sm: 'row' }}
           justify="space-between"
@@ -250,47 +250,50 @@ export const CoffeePage = () => {
           gap={3}
           mb={6}
         >
-          <InputGroup maxW={{ base: '100%', sm: '340px' }}>
-            <InputLeftElement pointerEvents="none">
-              <Icon viewBox="0 0 24 24" color="gray.400" boxSize={4}>
-                <path
-                  fill="currentColor"
-                  d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"
-                />
-              </Icon>
-            </InputLeftElement>
-            <Input
-              placeholder="Rechercher un café…"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              bg="white"
-              borderColor="gray.200"
-              _focus={{ borderColor: 'secondary.500', boxShadow: 'none' }}
-            />
-          </InputGroup>
+          {/* Gauche : barre de recherche + sélecteur de tri côte à côte */}
+          <HStack spacing={3} flexWrap={{ base: 'wrap', sm: 'nowrap' }} flex={1}>
+            <InputGroup minW={{ base: '100%', sm: '220px' }} maxW={{ base: '100%', sm: '300px' }}>
+              <InputLeftElement pointerEvents="none">
+                <Icon viewBox="0 0 24 24" color="gray.400" boxSize={4}>
+                  <path
+                    fill="currentColor"
+                    d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"
+                  />
+                </Icon>
+              </InputLeftElement>
+              <Input
+                placeholder="Rechercher un café…"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                bg="white"
+                borderColor="gray.200"
+                _focus={{ borderColor: 'secondary.500', boxShadow: 'none' }}
+              />
+            </InputGroup>
 
-          <HStack spacing={2} flexWrap="wrap">
             <Select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
               size="md"
               bg="white"
               borderColor="gray.200"
-              flex={{ base: '1', sm: 'none' }}
-              maxW={{ base: '100%', sm: '200px' }}
+              maxW={{ base: '100%', sm: '180px' }}
+              flexShrink={0}
               _focus={{ borderColor: 'secondary.500', boxShadow: 'none' }}
             >
               {SORT_OPTIONS.map((o) => (
                 <option key={o.value} value={o.value}>{o.label}</option>
               ))}
             </Select>
+          </HStack>
 
+          {/* Droite : bouton Filtres + Réinitialiser */}
+          <HStack spacing={2} flexShrink={0} justify={{ base: 'flex-start', sm: 'flex-end' }}>
             <Button
               variant="outline"
               borderColor="gray.300"
               size="md"
               onClick={onToggle}
-              flexShrink={0}
               _hover={{ bg: 'secondary.50', borderColor: 'secondary.400' }}
             >
               Filtres
@@ -302,7 +305,7 @@ export const CoffeePage = () => {
             </Button>
 
             {activeFiltersCount > 0 && (
-              <Button variant="ghost" size="md" color="gray.500" onClick={resetFilters} flexShrink={0}>
+              <Button variant="ghost" size="md" color="gray.500" onClick={resetFilters}>
                 Réinitialiser
               </Button>
             )}
