@@ -1,9 +1,9 @@
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL; //meta : objet fourni par vite pour accéder aux variables d'environnement (propriété de import) ; obligatoire car .env pas fichier JS classique
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 interface HeaderOptions {
   includeAuth?: boolean; //savoir si on ajoute JWT
-  contentType?: "json" | "form" | "multipart" | "none"; //contentType : indique le format envoyé dans le body ; multipart : envoyer des fichiers ; none : requete sans body (ex: GET)
-  accept?: string; //format de reponse
+  contentType?: "json" | "form" | "multipart" | "none"; //multipart : envoyer des fichiers ; none : requete sans body (ex: GET)
+  accept?: string;
   customHeaders?: Record<string, string>; //customHeaders : ajouter autre type pas prévu au cas ou ; Record : utilitaire ts pour créer un type objet (clé valeur) : necessaire car http est une paires nom valeur de str
 }
 
@@ -18,14 +18,14 @@ const getHeaders = (options: HeaderOptions = {}): HeadersInit => {
     contentType = "json",
     accept = "application/json",
     customHeaders = {},
-  } = options; //destructuration, on extrait les valeurs de options et on leur donne des valeurs par défaut si elles ne sont pas fournies
+  } = options;
 
   const headers: HeadersInit = {
-    //objet final qui contient toutes les info header qui sera envoye a fetch
-    Accept: accept, //type de réponse qu'on attend du serveur
-    "Accept-Language": "fr-FR,fr;q=0.9,en;q=0.8", //langue préférée (français par défaut, puis anglais) ; le serveur peut utiliser ça pour renvoyer des messages d'erreur traduits ; q : pondération
+    //objet final qui contient toutes les info header
+    Accept: accept,
+    "Accept-Language": "fr-FR,fr;q=0.9,en;q=0.8",
     "X-Requested-With": "XMLHttpRequest",
-    /* X-Requested-With : Standard pour identifier les requêtes AJAX ((Asynchronous JavaScript and XML) 
+    /* X-Requested-With : Standard pour identifier les requêtes AJAX (Asynchronous JavaScript and XML) 
     Permet au serveur de distinguer une requête asynchrone d'une requête de navigation classique.
     On signale que la requête provient d'un appel JavaScript (fetch, XMLHttpRequest) et non d'un clic direct dans le navigateur.*/
     "X-Client-Version": "1.0.0", //transmet la version sémantique (semantic versioning) de l'application cliente. Utilisé pour le versioning d'API et la rétrocompatibilité.
@@ -48,10 +48,8 @@ const getHeaders = (options: HeaderOptions = {}): HeadersInit => {
       break;
   }
 
-  //Ajoute token JWT aux headers s'il existe, sinon avertit
+  //Ajoute JWT aux headers s'il existe, sinon avertit
   if (includeAuth) {
-    // useLocalStorage sérialise en JSON → le token est stocké sous la forme "\"abc123\""
-    // Il faut parser avec JSON.parse pour obtenir le string brut sans guillemets
     const raw = localStorage.getItem("auth_token");
     const token = raw ? JSON.parse(raw) : null;
     if (token) {
