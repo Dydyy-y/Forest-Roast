@@ -1,10 +1,10 @@
-# 🌲 Forest Roast — E-commerce de café torréfié
+# Forest Roast — E-commerce de café torréfié
 
 Application e-commerce complète dédiée à la vente de cafés torréfiés, construite avec **React 18 + TypeScript** côté client et **Node.js + Express + Sequelize** côté API.
 
 ---
 
-## 📋 Table des matières
+## Table des matières
 
 - [Aperçu du projet](#aperçu-du-projet)
 - [Stack technique](#stack-technique)
@@ -158,11 +158,11 @@ npm run dev
 | `/product/:id` | Détail d'un produit | Public |
 | `/login` | Connexion / Inscription | Public |
 | `/abonnement` | Offres d'abonnement | Public |
-| `/profile` | Profil utilisateur | 🔒 Authentifié |
-| `/cart` | Panier d'achats | 🔒 Authentifié |
-| `/order-confirmation` | Confirmation de commande | 🔒 Authentifié |
+| `/profile` | Profil utilisateur | Authentifié |
+| `/cart` | Panier d'achats | Authentifié |
+| `/order-confirmation` | Confirmation de commande | Authentifié |
 
-> Les routes protégées (`🔒`) redirigent automatiquement vers `/login` si l'utilisateur n'est pas connecté.
+> Les routes protégées  redirigent automatiquement vers `/login` si l'utilisateur n'est pas connecté.
 
 ### Authentification
 
