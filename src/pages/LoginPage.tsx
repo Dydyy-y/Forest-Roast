@@ -40,12 +40,6 @@ export const LoginPage = () => {
   const [signupLoading, setSignupLoading] = useState(false);
   const [signupError, setSignupError] = useState<string | null>(null);
 
-  // Handler : Connexion
-  /**
-   * Soumission du formulaire de connexion
-   *ce.preventDefault() : empêche le comportement par défaut du formulaire HTML (rechargement de page)
-   * → on gère la soumission en JavaScript avec fetch
-   */
   const handleSignin = async (e: React.FormEvent) => {
     e.preventDefault();
     setSigninError(null);
@@ -74,7 +68,7 @@ export const LoginPage = () => {
     }
   };
 
-  // Handler : Inscription
+  // Inscription
   /**
    * Soumission du formulaire d'inscription
    *
@@ -150,14 +144,6 @@ export const LoginPage = () => {
 
         <Divider mb={6} />
 
-        {/**
-         * 🎓 CONCEPT : Tabs (Chakra UI)
-         * Tabs → conteneur principal
-         * TabList → la barre des onglets
-         * Tab → un onglet cliquable
-         * TabPanels → zone de contenu
-         * TabPanel → contenu d'un onglet (affiché quand l'onglet est actif)
-         */}
         <Tabs isFitted variant="enclosed" colorScheme="orange">
           <TabList mb={4}>
             <Tab
@@ -185,19 +171,8 @@ export const LoginPage = () => {
                 </Alert>
               )}
 
-              {/**
-               * 🎓 CONCEPT : <form onSubmit={...}>
-               * On utilise la soumission native du formulaire HTML (<form>) plutôt que
-               * le onClick du Button. Avantage : la touche Entrée déclenche aussi le submit.
-               */}
               <form onSubmit={handleSignin}>
                 <VStack spacing={4}>
-                  {/**
-                   * 🎓 CONCEPT : FormControl
-                   * FormControl gère l'association entre label, input et message d'erreur.
-                   * isInvalid={true} → met l'input en rouge et affiche FormErrorMessage
-                   * isRequired → ajoute un * au label automatiquement
-                   */}
                   <FormControl isRequired>
                     <FormLabel color="primary.900" fontWeight="medium">
                       Adresse email
