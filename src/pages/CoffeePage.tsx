@@ -77,19 +77,19 @@ export const CoffeePage = () => {
   const { isAuthenticated } = useAuth();
   const { isOpen: filtersOpen, onToggle } = useDisclosure({ defaultIsOpen: true });
 
-  // ── Data ──────────────────────────────────────────────────
+  //data
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // ── Filters ───────────────────────────────────────────────
+  //filters
   const [search, setSearch] = useState('');
   const [selectedRoasts, setSelectedRoasts] = useState<string[]>([]);
   const [selectedProfiles, setSelectedProfiles] = useState<string[]>([]);
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 30]);
   const [sortBy, setSortBy] = useState('default');
 
-  // Load all products once
+  //Load all products once
   useEffect(() => {
     setLoading(true);
     productService.search()
@@ -127,7 +127,7 @@ export const CoffeePage = () => {
     return [min, 45];
   }, [products]);
 
-  // ── Filtered + sorted list ────────────────────────────────
+  //Filtered + sorted list
   const filtered = useMemo(() => {
     let list = [...products];
 

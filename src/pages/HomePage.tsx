@@ -256,9 +256,9 @@ export const HomePage = () => {
           </Text>
         </VStack>
 
-        {/* ── Barre de recherche ───────────────────────────────────────────
+        {/* Barre de recherche
             Input contrôlé : onChange met à jour searchQuery → déclenche debounce
-            → après 400ms → debouncedSearch change → useEffect relance l'API
+            = après 400ms → debouncedSearch change → useEffect relance l'API
         */}
         <Box maxW="480px" mx="auto" mb={10}>
           <InputGroup size="lg">
@@ -284,7 +284,7 @@ export const HomePage = () => {
           )}
         </Box>
 
-        {/* ── Alerte API indisponible ──────────────────────────────────────── */}
+        {/*Alerte API indisponible*/}
         {error && (
           <Alert status="warning" mb={6} borderRadius="md">
             <AlertIcon />
@@ -293,14 +293,14 @@ export const HomePage = () => {
           </Alert>
         )}
 
-        {/* ── Loader pendant l'appel API ──────────────────────────────────── */}
+        {/*Loader pendant l'appel API*/}
         {loading ? (
           <VStack py={16} spacing={4}>
             <Spinner size="xl" color="secondary.400" thickness="3px" />
             <Text color="gray.500">Chargement des produits...</Text>
           </VStack>
         ) : products.length === 0 ? (
-          /* ── Aucun résultat ───────────────────────────────────────────── */
+          /*Aucun résultat*/
           <VStack py={16} spacing={4}>
             <Text fontSize="2xl">☕</Text>
             <Text color="gray.500" textAlign="center">
@@ -311,7 +311,7 @@ export const HomePage = () => {
             </Button>
           </VStack>
         ) : (
-          /* ── Grille de produits ───────────────────────────────────────── */
+          /* Grille de produits */
           <>
             <SimpleGrid 
               columns={{ base: 1, md: 2, lg: 3 }} 

@@ -1,18 +1,3 @@
-/**
- * ProductDetailPage — STORY-004
- * URL : /product/:id
- *
- * Concepts React utilisés ici :
- * ─────────────────────────────
- * useParams    : extrait l'id dynamique de l'URL (/product/:id)
- * useEffect    : appel API au montage du composant (quand id change)
- * useState     : états locaux → product, loading, error
- * useNavigate  : navigation programmatique (bouton Retour)
- *
- * L'id de l'URL est une string → on le convertit en number pour l'API avec parseInt()
- * Si l'API est indisponible → fallback sur les données mock locales
- */
-
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
@@ -40,26 +25,20 @@ import { RelatedProducts } from '../components/features/products/RelatedProducts
 import { ROAST_LABELS } from '../constants/product.constants';
 
 export const ProductDetailPage = () => {
-  // ─── Routing ─────────────────────────────────────────────────────────────
-  // useParams() retourne les paramètres dynamiques de la route (/product/:id)
-  // id est TOUJOURS une string depuis l'URL
+  // Routing
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
   const { addToCart } = useCart();
   const toast = useToast();
 
-  // ─── État local ───────────────────────────────────────────────────────────
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  // notFound : true si l'API renvoie 404 ou si l'id ne correspond à aucun produit mock
   const [notFound, setNotFound] = useState<boolean>(false);
-  // addingToCart : désactive le bouton pendant l'appel API pour éviter les double-clics
   const [addingToCart, setAddingToCart] = useState<boolean>(false);
-  // allProducts : pour la section "Vous pourriez aimer"
   const [allProducts, setAllProducts] = useState<Product[]>([]);
 
-  // ─── Chargement du produit ────────────────────────────────────────────────
+  // Chargement du produit
   useEffect(() => {
     // Garde : si pas d'id dans l'URL, on arrête
     if (!id) {
@@ -88,20 +67,13 @@ export const ProductDetailPage = () => {
     loadProduct();
   }, [id]); // Se relance si l'id change (navigation entre produits)
 
-  // ─── Chargement de tous les produits (suggestions) ────────────────────────
+  // Chargement de tous les produits (suggestions)
   useEffect(() => {
     productService.search()
       .then(setAllProducts)
       .catch(() => setAllProducts([]));
   }, []);
 
-  // ─── Handler Ajouter au panier ────────────────────────────────────────────
-  /**
-   * 🎓 CONCEPT : async event handler
-   * handleAddToCart est async car addToCart() fait un appel API.
-   * On utilise un state addingToCart pour désactiver le bouton pendant l'appel
-   * (evite les doubles-clics et montre un feedback visuel à l'utilisateur).
-   */
   const handleAddToCart = async () => {
     if (!product) return;
 
@@ -113,7 +85,7 @@ export const ProductDetailPage = () => {
 
     try {
       setAddingToCart(true);
-      await addToCart(product.id); // CartContext → POST /api/carts/{cart_id}/products/{product_id}
+      await addToCart(product.id); 
 
       // Feedback visuel succès via toast Chakra UI
       toast({
@@ -139,7 +111,6 @@ export const ProductDetailPage = () => {
     }
   };
 
-  // ─── Rendu conditionnel : Loading ─────────────────────────────────────────
   if (loading) {
     return (
       <PageLayout>
@@ -151,7 +122,7 @@ export const ProductDetailPage = () => {
     );
   }
 
-  // ─── Rendu conditionnel : 404 ─────────────────────────────────────────────
+  //404
   if (notFound || !product) {
     return (
       <PageLayout>
@@ -171,14 +142,14 @@ export const ProductDetailPage = () => {
     );
   }
 
-  // ─── Rendu principal ──────────────────────────────────────────────────────
+  // Rendu principal
   return (
     <PageLayout>
 
       <Container maxW="container.xl" py={{ base: 10, md: 16 }}>
 
 
-        {/* ── Bloc principal : Image + Infos ─────────────────────────────── */}
+        {/* Bloc principal : Image + Infos */}
         <SimpleGrid columns={{ base: 1, md: 2 }} spacing={{ base: 8, md: 14 }}>
 
           {/* Colonne gauche : Image */}
@@ -275,7 +246,7 @@ export const ProductDetailPage = () => {
 
             <Divider />
 
-            {/* ── Tableau caractéristiques ───────────────────────────────── */}
+            {/* Tableau caractéristiques */}
             <VStack align="start" spacing={3} w="100%">
               <Heading size="sm" color="primary.900" textTransform="uppercase" letterSpacing="wider">
                 Caractéristiques
@@ -335,7 +306,7 @@ export const ProductDetailPage = () => {
           </VStack>
         </SimpleGrid>
 
-        {/* ── Description complète ────────────────────────────────────────── */}
+        {/* Description complète*/}
         {product.description && (
           <Box mt={14}>
             <Divider mb={8} />
@@ -350,7 +321,7 @@ export const ProductDetailPage = () => {
 
       </Container>
 
-      {/* ── Vous pourriez aimer ─────────────────────────────────────────── */}
+      {/* Vous pourriez aimer */}
       <RelatedProducts
         currentProductId={product.id}
         products={allProducts}

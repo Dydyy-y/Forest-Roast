@@ -42,13 +42,6 @@ export const ProfilePage = () => {
     if (!user) return;
 
     try {
-      /**
-       * Envoi conditionnel
-       * On ne construit l'objet qu'avec les champs non vides.
-       * Spread + condition : { ...base, ...(condition && { key: value }) }
-       *
-       * Ne jamais envoyer password: "" → l'API écraserait le mot de passe
-       */
       const data = {
         firstName,
         lastName,
@@ -57,21 +50,13 @@ export const ProfilePage = () => {
       };
 
       const updatedUser = await userService.update(user.id, data);
-
-      /**
-       * Mise à jour du contexte global → tous les composants qui lisent
-       * useAuth().user verront les nouvelles infos sans re-login
-       */
       updateUser(updatedUser);
       setSuccess(true);
       setPassword(''); // vider le champ mot de passe après succès
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Erreur lors de la mise à jour';
 
-      /**
-       * 401 Unauthorized : le token a expiré
-       * → on déconnecte l'utilisateur et on le renvoie vers /login
-       */
+      //401 Unauthorized : le token a expiré = on déconnecte l'utilisateur et on le renvoie vers /login
       if (
         message.toLowerCase().includes('unauthorized') ||
         message.includes('401')
@@ -93,11 +78,6 @@ export const ProfilePage = () => {
       <Container maxW="container.sm" py={10}>
         {/* Avatar + titre */}
         <VStack spacing={4} mb={8} textAlign="center">
-          {/**
-           * 🎓 Avatar Chakra UI
-           * name : Chakra extrait les initiales automatiquement (ex: "Jean Dupont" → "JD")
-           * bg   : couleur de fond issue du design system
-           */}
           <Avatar
             size="xl"
             name={`${user?.firstName} ${user?.lastName}`}
