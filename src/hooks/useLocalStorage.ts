@@ -48,7 +48,7 @@ function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T) => voi
         try {
           setStoredValue(JSON.parse(e.newValue));
         } catch (error) {
-          console.warn(`⚠️ Error parsing storage event for key "${key}":`, error);
+          console.warn(`Error parsing storage event for key "${key}":`, error);
         }
       }
     };
