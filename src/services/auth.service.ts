@@ -96,4 +96,9 @@ class AuthService extends BaseService<AuthUser> {
   }
 }
 
+// helper simple pour le TP : vérifie la présence d'un token dans le localStorage
+export function isAuthenticated(): boolean {
+  return !!localStorage.getItem("token");
+}
+
 export const authService = new AuthService();

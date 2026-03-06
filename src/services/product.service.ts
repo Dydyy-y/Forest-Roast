@@ -98,3 +98,9 @@ class ProductService extends BaseService<Product> {
 }
 
 export const productService = new ProductService();
+
+// petit utilitaire basique utilisé dans les tests unitaires du TP
+export async function fetchProducts() {
+  const res = await fetch('/api/products');
+  return res.json();
+}
